@@ -47,6 +47,11 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $this->hasMany(Post::class)->latest();
     }
 
+    public function stories(): HasMany
+    {
+        return $this->hasMany(Story::class)->latest();
+    }
+
     public function avatarUrl(): string
     {
         return $this->avatar_path

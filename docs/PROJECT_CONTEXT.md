@@ -40,6 +40,10 @@ the user first:
   register form.
 - Reactions (`like`) are polymorphic (`reactable_type`/`reactable_id`) so the
   same `Reaction` model covers both Post and Comment likes.
+- Stories are real: `stories` table (`user_id`, `media_path`, `caption`,
+  `expires_at`), `Story::active()` scope filters `expires_at > now()`. Image
+  only, no video. No seen/view tracking, no cross-user auto-advance in the
+  viewer — deliberately out of scope, add if asked.
 - Fortify's post-login redirect (`config/fortify.php` → `home`) points at
   `/feed`, not `/dashboard`.
 
@@ -68,7 +72,6 @@ the user first:
   feature behind it (sharing, reporting, DMs, stories) is actually being built.
 
 ## Known accepted gaps (Phase 1)
-- Stories bar is static/decorative (real stories = later phase).
 - Left/right sidebar widgets (weather, badges, "who's following", trending,
   birthdays, etc.) are static demo content, not wired to real data.
 - ~100 other template pages still 404 (messenger, notifications, forum,
