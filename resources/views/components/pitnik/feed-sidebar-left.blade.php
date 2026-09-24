@@ -5,7 +5,7 @@
 										<div class="your-page">
 											<figure>
 												<a href="{{ route('profile.show', auth()->user()) }}" title=""><img src="{{ auth()->user()->avatarUrl() }}" alt=""></a>
-												<span>@{{ auth()->user()->username }}</span>
+												<span>{{ '@'.auth()->user()->username }}</span>
 											</figure>
 											<div class="page-meta">
 												<a href="{{ route('profile.show', auth()->user()) }}" title="" class="underline">{{ auth()->user()->name }}</a>

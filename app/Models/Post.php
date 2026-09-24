@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-#[Fillable(['body', 'image_path'])]
+#[Fillable(['user_id', 'body', 'image_path'])]
 class Post extends Model
 {
     use HasFactory;

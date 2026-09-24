@@ -1,12 +1,17 @@
 <?php
 
 use App\Models\Comment;
+use App\Models\Friendship;
 use App\Models\Post;
 use App\Models\User;
+use App\Notifications\FriendRequestAccepted;
+use App\Notifications\FriendRequestReceived;
+use App\Notifications\PostCommented;
+use App\Notifications\PostLiked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-new class extends Component
+new #[\Livewire\Attributes\Layout('layouts::bare')] class extends Component
 {
     use WithFileUploads;
 
@@ -22,6 +27,63 @@ new class extends Component
     {
         $this->user = $user;
         $this->loadPosts();
+    }
+
+    public function friendshipStatus(): string
+    {
+        return auth()->user()->friendshipStatusWith($this->user);
+    }
+
+    public function sendFriendRequest(): void
+    {
+        if (auth()->id() === $this->user->id) {
+            return;
+        }
+
+        Friendship::firstOrCreate([
+            'user_id' => auth()->id(),
+            'friend_id' => $this->user->id,
+        ], ['status' => 'pending']);
+
+        $this->user->notify(new FriendRequestReceived(auth()->user()));
+    }
+
+    public function cancelFriendRequest(): void
+    {
+        Friendship::where('user_id', auth()->id())
+            ->where('friend_id', $this->user->id)
+            ->where('status', 'pending')
+            ->delete();
+    }
+
+    public function acceptFriendRequest(): void
+    {
+        $friendship = Friendship::where('user_id', $this->user->id)
+            ->where('friend_id', auth()->id())
+            ->where('status', 'pending')
+            ->firstOrFail();
+
+        $friendship->update(['status' => 'accepted']);
+
+        $this->user->notify(new FriendRequestAccepted(auth()->user()));
+    }
+
+    public function declineFriendRequest(): void
+    {
+        Friendship::where('user_id', $this->user->id)
+            ->where('friend_id', auth()->id())
+            ->where('status', 'pending')
+            ->delete();
+    }
+
+    public function unfriend(): void
+    {
+        Friendship::where('status', 'accepted')
+            ->where(function ($query) {
+                $query->where('user_id', auth()->id())->where('friend_id', $this->user->id);
+            })->orWhere(function ($query) {
+                $query->where('user_id', $this->user->id)->where('friend_id', auth()->id());
+            })->delete();
     }
 
     public function title(): string
@@ -81,6 +143,10 @@ new class extends Component
             $existing->delete();
         } else {
             $post->reactions()->create(['user_id' => auth()->id(), 'type' => 'like']);
+
+            if ($post->user_id !== auth()->id()) {
+                $post->user->notify(new PostLiked(auth()->user(), $post));
+            }
         }
 
         $this->loadPosts();
@@ -109,11 +175,15 @@ new class extends Component
             return;
         }
 
-        Comment::create([
+        $comment = Comment::create([
             'post_id' => $postId,
             'user_id' => auth()->id(),
             'body' => $body,
         ]);
+
+        if ($comment->post->user_id !== auth()->id()) {
+            $comment->post->user->notify(new PostCommented(auth()->user(), $comment->post));
+        }
 
         $this->loadPosts();
     }
@@ -156,6 +226,23 @@ new class extends Component
 
 												<div class="author-content">
 													<a class="h4 author-name" href="{{ route('profile.show', $user) }}">{{ $user->name }}</a>
+
+													@if(auth()->id() !== $user->id)
+														@switch($this->friendshipStatus())
+															@case('friends')
+																<a href="#" title="" class="main-btn3" wire:click.prevent="unfriend">Unfriend</a>
+																@break
+															@case('pending_sent')
+																<a href="#" title="" class="main-btn3" wire:click.prevent="cancelFriendRequest">Cancel Request</a>
+																@break
+															@case('pending_received')
+																<a href="#" title="" class="main-btn" wire:click.prevent="acceptFriendRequest">Accept</a>
+																<a href="#" title="" class="main-btn3" wire:click.prevent="declineFriendRequest">Decline</a>
+																@break
+															@default
+																<a href="#" title="" class="main-btn" wire:click.prevent="sendFriendRequest">Add Friend</a>
+														@endswitch
+													@endif
 												</div>
 											</div>
 										</div>
@@ -168,7 +255,7 @@ new class extends Component
 													<a class="" href="about.html">About</a>
 												</li>
 												<li>
-													<a class="" href="timeline-friends.html">Friends</a>
+													<a href="{{ route('profile.friends', $user) }}">Friends</a>
 												</li>
 												<li>
 													<a class="" href="timeline-photos.html">Photos</a>
@@ -192,6 +279,7 @@ new class extends Component
 											</ul>
 											<ol class="folw-detail">
 												<li><span>Posts</span><ins>{{ $user->posts->count() }}</ins></li>
+												<li><a href="{{ route('profile.friends', $user) }}"><span>Friends</span><ins>{{ $user->acceptedFriends()->count() }}</ins></a></li>
 											</ol>
 										</div>
 									</div>

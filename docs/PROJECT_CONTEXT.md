@@ -44,6 +44,14 @@ the user first:
   `/feed`, not `/dashboard`.
 
 ## Recurring gotchas
+- **Every Pitnik full-page component needs
+  `#[\Livewire\Attributes\Layout('layouts::bare')]`.** Livewire's default
+  full-page layout is `layouts::app` (Flux sidebar); Pitnik pages pull in
+  `layouts::pitnik` themselves via `@component`, so without the bare
+  (`{{ $slot }}` only) layout the whole Pitnik page gets nested inside the Flux
+  shell — Flux sidebar overlay top-left, Pitnik header pushed mid-page.
+- **`@{{ ... }}` in Blade is the escape for literal braces**, not "@ + echo" —
+  write `{{ '@'.$user->username }}` for an @handle.
 - **PostToolUse formatter hook strips unused imports/closure captures
   immediately** — if you add a `use Foo;` import (or add a var to a closure's
   `use (...)`) in one Edit without its usage present in that same edit's

@@ -137,7 +137,7 @@
 				<li><span>Featured</span>
 					<ul>
 						<li><a href="chat-messenger.html" title="">Messenger (Chatting)</a></li>
-						<li><a href="notifications.html" title="">Notifications</a></li>
+						<li><a href="{{ route('notifications') }}" title="">Notifications</a></li>
 						<li><a href="badges.html" title="">Badges</a></li>
 						<li><a href="faq.html" title="">Faq's</a></li>
 						<li><a href="contribution.html" title="">Contriburion Page</a></li>
@@ -273,190 +273,8 @@
 				<li><a class="navy" href="podcast.html" title="Podcast"><i class="fa-regular fa-microphone"></i></a></li>
 			</ul>
 			<ul class="setting-area">
-				<li>
-					<a href="" title="Friend Requests" data-ripple=""><em class="bg-red">5</em>
-						<i><svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 499.3 512" height="16px" fill="#30305b">
-							<g>
-								<path d="M196.3 239.5c30.4 0 58.1-11.4 79.3-30.1 7.2 12.8 17.4 23.7 30 32 15.5 10.1 33.1 15.4 51.2 15.4 6.4 0 12.8-.7 19.2-2 24.5-5.1 45.6-19.4 59.3-40.3 13.7-20.9 18.5-45.9 13.4-70.4-7.7-36.9-36.5-65.5-73.5-72.9-10.8-2.1-21.4 4.9-23.5 15.7-2.1 10.8 4.9 21.4 15.7 23.5 21.2 4.2 37.8 20.6 42.1 41.8 2.9 14 .2 28.4-7.7 40.3-7.9 12-19.9 20.2-34 23.1-14 2.9-28.4.2-40.3-7.7-12-7.9-20.2-19.9-23.1-34-.1-.6-.3-1.3-.5-1.9 7.7-15.8 12.1-33.6 12.1-52.4C316 53.7 262.3 0 196.3 0S76.5 53.7 76.5 119.8s53.7 119.8 119.8 119.8zm0-199.5c44 0 79.8 35.8 79.8 79.8s-35.8 79.8-79.8 79.8-79.8-35.8-79.8-79.8S152.3 40 196.3 40zM498.4 415.2c-15.6-51.9-57.9-92.1-110.5-105.1-10.7-2.6-21.6 3.9-24.2 14.6-2.6 10.7 3.9 21.6 14.6 24.2 38.9 9.6 70.2 39.3 81.7 77.7 2.6 8.7 10.5 14.3 19.1 14.3s3.8-.3 5.8-.8c10.6-3.2 16.6-14.3 13.4-24.9zM323.4 365.5c-7.8-7.8-20.5-7.8-28.3 0-7.8 7.8-7.8 20.5 0 28.3l25.7 25.7c-24.5 3.1-64.3 7.5-106.6 9.4-115.7 5-154.1-12.4-166.7-23.2-6.8-5.8-7.6-11.2-7.6-15.3 0-9.5 3.7-17.3 11.4-24.5C88.6 331 197 329.1 235.6 331.3c11 .6 20.5-7.8 21.1-18.8.6-11-7.8-20.5-18.8-21.1-1.6 0-38.8-2.2-83.1 1.9-62 5.6-106 20.3-130.8 43.5C8.5 351.3.2 369.7 0 390c-.2 17.8 7.3 33.7 21.5 46 26.3 22.7 76.7 33.8 153.5 33.8s26.8-.3 41.4-1c36.6-1.6 70.8-5 95.7-7.9l-16.9 16.9c-7.8 7.8-7.8 20.5 0 28.3 3.9 3.9 9 5.9 14.1 5.9s10.2-2 14.1-5.9l56.2-56.2c3.8-3.8 5.9-8.8 5.9-14.1s-2.1-10.4-5.9-14.1l-56.2-56.2z"></path>
-							</g>
-						</svg></i>
-					</a>
-					<div class="dropdowns">
-						<span>5 New Requests <a href="#" title="">View all Requests</a></span>
-						<ul class="drops-menu">
-							<li>
-								<div>
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-2.jpg" alt="">
-									</figure>
-									<div class="mesg-meta">
-										<h6><a href="#" title="">Loren</a></h6>
-										<span><b>Amy</b> is mutule friend</span>
-										<i>yesterday</i>
-									</div>
-									<div class="add-del-friends">
-										<a href="#" title=""><i class="ti-heart"></i></a>
-										<a href="#" title=""><i class="ti-trash"></i></a>
-									</div>
-								</div>	
-							</li>
-							<li>
-								<div>
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-3.jpg" alt="">
-									</figure>
-									<div class="mesg-meta">
-										<h6><a href="#" title="">Tina Trump</a></h6>
-										<span><b>Simson</b> is mutule friend</span>
-										<i>2 days ago</i>
-									</div>
-									<div class="add-del-friends">
-										<a href="#" title=""><i class="ti-heart"></i></a>
-										<a href="#" title=""><i class="ti-trash"></i></a>
-									</div>
-								</div>	
-							</li>
-							<li>
-								<div>
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-4.jpg" alt="">
-									</figure>
-									<div class="mesg-meta">
-										<h6><a href="#" title="">Andrew</a></h6>
-										<span><b>Bikra</b> is mutule friend</span>
-										<i>4 hours ago</i>
-									</div>
-									<div class="add-del-friends">
-										<a href="#" title=""><i class="ti-heart"></i></a>
-										<a href="#" title=""><i class="ti-trash"></i></a>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div>
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-5.jpg" alt="">
-									</figure>
-									<div class="mesg-meta">
-										<h6><a href="#" title="">Dasha</a></h6>
-										<span><b>Sarah</b> is mutule friend</span>
-										<i>9 hours ago</i>
-									</div>
-									<div class="add-del-friends">
-										<a href="#" title=""><i class="ti-heart"></i></a>
-										<a href="#" title=""><i class="ti-trash"></i></a>
-									</div>
-								</div>	
-							</li>
-							<li>
-								<div>
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-1.jpg" alt="">
-									</figure>
-									<div class="mesg-meta">
-										<h6><a href="#" title="">Emily</a></h6>
-										<span><b>Amy</b> is mutule friend</span>
-										<i>4 hours ago</i>
-									</div>
-									<div class="add-del-friends">
-										<a href="#" title=""><i class="ti-heart"></i></a>
-										<a href="#" title=""><i class="ti-trash"></i></a>
-									</div>
-								</div>	
-							</li>
-						</ul>
-						<a href="notifications.html" title="" class="more-mesg">View All</a>
-					</div>
-				</li>
-				<li>
-					<a href="#" title="Notification" data-ripple="">
-						<i><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
-							<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-							<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-						</svg></i><em class="bg-purple">7</em>
-					</a>
-					<div class="dropdowns">
-						<span>4 New Notifications <a href="#" title="">Mark all as read</a></span>
-						<ul class="drops-menu">
-							<li>
-								<a href="notifications.html" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-1.jpg" alt="">
-										<span class="status f-online"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>sarah Loren</h6>
-										<span>commented on your new profile status</span>
-										<i>2 min ago</i>
-									</div>
-								</a>
-							</li>
-							<li>
-								<a href="notifications.html" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-2.jpg" alt="">
-										<span class="status f-online"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>Jhon doe</h6>
-										<span>Nicholas Grissom just became friends. Write on his wall.</span>
-										<i>4 hours ago</i>
-										<figure>
-											<span>Today is Marina Valentine’s Birthday! wish for celebrating</span>
-											<img src="/vendor/pitnik/images/birthday.png" alt="">
-										</figure>
-									</div>
-								</a>
-							</li>
-							<li>
-								<a href="notifications.html" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-3.jpg" alt="">
-										<span class="status f-online"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>Andrew</h6>
-										<span>commented on your photo.</span>
-										<i>Sunday</i>
-										<figure>
-											<span>"Celebrity looks Beautiful in that outfit! We should see each"</span>
-											<img src="/vendor/pitnik/images/resources/admin.jpg" alt="">
-										</figure>
-									</div>
-								</a>
-							</li>
-							<li>
-								<a href="notifications.html" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-4.jpg" alt="">
-										<span class="status f-online"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>Tom cruse</h6>
-										<span>nvited you to attend to his event Goo in</span>
-										<i>May 19</i>
-									</div>
-								</a>
-								<span class="tag">New</span>
-							</li>
-							<li>
-								<a href="notifications.html" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-5.jpg" alt="">
-										<span class="status f-online"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>Amy</h6>
-										<span>Andrew Changed his profile picture. </span>
-										<i>dec 18</i>
-									</div>
-								</a>
-								<span class="tag">New</span>
-							</li>
-						</ul>
-						<a href="notifications.html" title="" class="more-mesg">View All</a>
-					</div>
-				</li>
+				<livewire:friend-request-bell />
+				<livewire:notification-bell />
 				<li>
 					<a href="#" title="Messages" data-ripple=""><i><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#30305b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square">
 						<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -753,7 +571,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="notifications.html" title="Notification" data-toggle="tooltip" data-placement="right">
+					<a href="{{ route('notifications') }}" title="Notification" data-toggle="tooltip" data-placement="right">
 						<i class="fa-regular fa-bell"></i>
 					</a>
 				</li>
@@ -871,7 +689,7 @@
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-star-christmas"></i> Featured</a>
 					<ul class="submenu">
 						<li><a href="chat-messenger.html" title="">Messenger (Chatting)</a></li>
-						<li><a href="notifications.html" title="">Notifications</a></li>
+						<li><a href="{{ route('notifications') }}" title="">Notifications</a></li>
 						<li><a href="badges.html" title="">Badges</a></li>
 						<li><a href="faq.html" title="">Faq's</a></li>
 						<li><a href="contribution.html" title="">Contriburion Page</a></li>

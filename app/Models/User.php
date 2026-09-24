@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
@@ -51,6 +52,53 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $this->avatar_path
             ? asset('storage/'.$this->avatar_path)
             : 'https://ui-avatars.com/api/?name='.urlencode($this->name);
+    }
+
+    public function friendshipStatusWith(User $other): string
+    {
+        if ($other->id === $this->id) {
+            return 'self';
+        }
+
+        $friendship = Friendship::where(function ($query) use ($other) {
+            $query->where('user_id', $this->id)->where('friend_id', $other->id);
+        })->orWhere(function ($query) use ($other) {
+            $query->where('user_id', $other->id)->where('friend_id', $this->id);
+        })->first();
+
+        if (! $friendship) {
+            return 'none';
+        }
+
+        if ($friendship->status === 'accepted') {
+            return 'friends';
+        }
+
+        return $friendship->user_id === $this->id ? 'pending_sent' : 'pending_received';
+    }
+
+    public function acceptedFriends(): Collection
+    {
+        $friendIds = Friendship::where('status', 'accepted')
+            ->where(function ($query) {
+                $query->where('user_id', $this->id)->orWhere('friend_id', $this->id);
+            })
+            ->get()
+            ->map(fn (Friendship $friendship) => $friendship->user_id === $this->id
+                ? $friendship->friend_id
+                : $friendship->user_id
+            );
+
+        return User::whereIn('id', $friendIds)->get();
+    }
+
+    public function pendingRequestsReceived(): Collection
+    {
+        return Friendship::with('user')
+            ->where('friend_id', $this->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->get();
     }
 
     /**

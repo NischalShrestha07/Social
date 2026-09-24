@@ -2,12 +2,14 @@
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Notifications\PostCommented;
+use App\Notifications\PostLiked;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-new #[Title('Newsfeed')] class extends Component
+new #[Title('Newsfeed'), \Livewire\Attributes\Layout('layouts::bare')] class extends Component
 {
     use WithFileUploads;
 
@@ -56,6 +58,10 @@ new #[Title('Newsfeed')] class extends Component
             $existing->delete();
         } else {
             $post->reactions()->create(['user_id' => auth()->id(), 'type' => 'like']);
+
+            if ($post->user_id !== auth()->id()) {
+                $post->user->notify(new PostLiked(auth()->user(), $post));
+            }
         }
 
         unset($this->posts);
@@ -84,11 +90,15 @@ new #[Title('Newsfeed')] class extends Component
             return;
         }
 
-        Comment::create([
+        $comment = Comment::create([
             'post_id' => $postId,
             'user_id' => auth()->id(),
             'body' => $body,
         ]);
+
+        if ($comment->post->user_id !== auth()->id()) {
+            $comment->post->user->notify(new PostCommented(auth()->user(), $comment->post));
+        }
 
         unset($this->posts);
     }
