@@ -16,6 +16,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('friend-requests', 'pages::friend-requests')->name('friend-requests');
 
     Route::livewire('notifications', 'pages::notifications')->name('notifications');
+
+    Route::livewire('messages/{user:username?}', 'pages::messenger')->name('messages');
 });
 
 require __DIR__.'/settings.php';

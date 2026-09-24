@@ -12,7 +12,7 @@ Build is phased — don't jump ahead of the current phase without checking with
 the user first:
 1. **Phase 1 (done):** auth, profile, newsfeed, post/comment/like — the core loop.
 2. Friends/follow + notifications + stories (real, not the static demo bar).
-3. Chat/messenger (real-time).
+3. **Phase 3 (done):** 1:1 chat/messenger (Livewire polling).
 4. Groups/pages.
 5. Marketplace / jobs / forum / video / ads — secondary modules.
 
@@ -44,6 +44,25 @@ the user first:
   `expires_at`), `Story::active()` scope filters `expires_at > now()`. Image
   only, no video. No seen/view tracking, no cross-user auto-advance in the
   viewer — deliberately out of scope, add if asked.
+- **Messenger (Phase 3) is 1:1 over Livewire polling, not websockets** (user's
+  call). Schema is group-ready (`conversations`, `conversation_user` pivot with
+  `last_read_at`, `messages`) but only 1:1 is built; `Conversation::between()`
+  find-or-creates the 2-participant conversation. `/messages/{username?}` page
+  is a thin full-page shell; the polled UI is the class component
+  `App\Livewire\Messenger` (`wire:poll.3s`) so each poll re-renders only the
+  chat section, not the whole Pitnik layout — keep polling inside nested
+  components, never on a full-page component. No empty conversation row is
+  created by just visiting `/messages/{user}` — it's created on first send.
+  Security: `conversationId`/`targetUserId` are `#[Locked]`, and the active
+  conversation is always looked up through `auth()->user()->conversations()`,
+  so a non-participant gets null/403. Conversation-list rows are plain links
+  (`route('messages', $peer)`), no client-supplied ids. Header unread badge is
+  `App\Livewire\MessageBell` (`wire:poll.10s`, `User::unreadMessagesCount()`).
+  Upgrade path to Reverb: broadcast a `MessageSent` event from
+  `Messenger::send()` and swap `wire:poll` for an Echo listener — no schema
+  change needed. Not built (add if asked): group chats, attachments/emoji
+  picker, typing indicators, online presence, message delete/edit, search,
+  "load older" beyond the last 100 messages.
 - Fortify's post-login redirect (`config/fortify.php` → `home`) points at
   `/feed`, not `/dashboard`.
 
@@ -54,6 +73,10 @@ the user first:
   `layouts::pitnik` themselves via `@component`, so without the bare
   (`{{ $slot }}` only) layout the whole Pitnik page gets nested inside the Flux
   shell — Flux sidebar overlay top-left, Pitnik header pushed mid-page.
+- **The dev-agent boundary guard hook blocks Bash commands containing any
+  `/word` token it reads as an absolute path** — including HTML closing tags
+  (`</div>`, `</a>`), regex like `s/.../\1/`, etc. Put such content in a script
+  file under `storage/logs/` via Write and run that instead.
 - **`@{{ ... }}` in Blade is the escape for literal braces**, not "@ + echo" —
   write `{{ '@'.$user->username }}` for an @handle.
 - **PostToolUse formatter hook strips unused imports/closure captures

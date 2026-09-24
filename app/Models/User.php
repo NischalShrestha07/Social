@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -45,6 +46,22 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class)->latest();
+    }
+
+    public function conversations(): BelongsToMany
+    {
+        return $this->belongsToMany(Conversation::class)->withPivot('last_read_at')->withTimestamps();
+    }
+
+    public function unreadMessagesCount(): int
+    {
+        return Message::where('messages.user_id', '!=', $this->id)
+            ->join('conversation_user as cu', function ($join) {
+                $join->on('cu.conversation_id', '=', 'messages.conversation_id')
+                    ->where('cu.user_id', '=', $this->id);
+            })
+            ->where(fn ($q) => $q->whereNull('cu.last_read_at')->orWhereColumn('messages.created_at', '>', 'cu.last_read_at'))
+            ->count();
     }
 
     public function stories(): HasMany

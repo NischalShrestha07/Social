@@ -70,7 +70,7 @@
 						<li><a href="classified.html" title="">Classified</a></li>
 						<li><a href="pitpoint.html" title="">PitPoint</a></li>
 						<li><a href="pittube.html" title="">Pittube</a></li>
-						<li><a href="chat-messenger.html" title="">Messenger</a></li>
+						<li><a href="{{ route('messages') }}" title="">Messenger</a></li>
 					</ul>
 				</li>
 				<li><span>Pittube</span>
@@ -105,7 +105,7 @@
 						<li><a href="timeline-photos.html" title="">Timeline Photos</a></li>
 						<li><a href="timeline-videos.html" title="">Timeline Videos</a></li>
 						<li><a href="timeline-groups.html" title="">Timeline Groups</a></li>
-						<li><a href="timeline-friends.html" title="">Timeline Friends</a></li>
+						<li><a href="{{ route('profile.friends', auth()->user()) }}" title="">Timeline Friends</a></li>
 						<li><a href="timeline-friends2.html" title="">Timeline Friends-2</a></li>
 						<li><a href="about.html" title="">Timeline About</a></li>
 						<li><a href="blog-posts.html" title="">Timeline Blog</a></li>
@@ -136,7 +136,7 @@
 				</li>
 				<li><span>Featured</span>
 					<ul>
-						<li><a href="chat-messenger.html" title="">Messenger (Chatting)</a></li>
+						<li><a href="{{ route('messages') }}" title="">Messenger (Chatting)</a></li>
 						<li><a href="{{ route('notifications') }}" title="">Notifications</a></li>
 						<li><a href="badges.html" title="">Badges</a></li>
 						<li><a href="faq.html" title="">Faq's</a></li>
@@ -275,84 +275,7 @@
 			<ul class="setting-area">
 				<livewire:friend-request-bell />
 				<livewire:notification-bell />
-				<li>
-					<a href="#" title="Messages" data-ripple=""><i><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#30305b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square">
-						<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-					</svg></i><em class="bg-blue">9</em></a>
-					<div class="dropdowns">
-						<span>5 New Messages <a href="#" title="">Mark all as read</a></span>
-						<ul class="drops-menu">
-							<li>
-								<a class="show-mesg" href="#" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-1.jpg" alt="">
-										<span class="status f-online"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>sarah Loren</h6>
-										<span><i class="ti-check"></i> Hi, how r u dear ...?</span>
-										<i>2 min ago</i>
-									</div>
-								</a>
-							</li>
-							<li>
-								<a class="show-mesg" href="#" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-2.jpg" alt="">
-										<span class="status f-offline"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>Jhon doe</h6>
-										<span><i class="ti-check"></i> We’ll have to check that at the office and see if the client is on board with</span>
-										<i>2 min ago</i>
-									</div>
-								</a>
-							</li>
-							<li>
-								<a class="show-mesg" href="#" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-3.jpg" alt="">
-										<span class="status f-online"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>Andrew</h6>
-										<span> <i class="fa fa-paperclip"></i>Hi Jack's! It’s Diana, I just wanted to let you know that we have to reschedule..</span>
-										<i>2 min ago</i>
-									</div>
-								</a>
-							</li>
-							<li>
-								<a class="show-mesg" href="#" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-4.jpg" alt="">
-										<span class="status f-offline"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>Tom cruse</h6>
-										<span><i class="ti-check"></i> Great, I’ll see you tomorrow!.</span>
-										<i>2 min ago</i>
-									</div>
-								</a>
-								<span class="tag">New</span>
-							</li>
-							<li>
-								<a class="show-mesg" href="#" title="">
-									<figure>
-										<img src="/vendor/pitnik/images/resources/thumb-5.jpg" alt="">
-										<span class="status f-away"></span>
-									</figure>
-									<div class="mesg-meta">
-										<h6>Amy</h6>
-										<span><i class="fa fa-paperclip"></i> Sed ut perspiciatis unde omnis iste natus error sit </span>
-										<i>2 min ago</i>
-									</div>
-								</a>
-								<span class="tag">New</span>
-							</li>
-						</ul>
-						<a href="chat-messenger.html" title="" class="more-mesg">View All</a>
-					</div>
-				</li>
+				<livewire:message-bell />
 			</ul>
 			<div class="user-img">
 				<img src="{{ auth()->user()->avatarUrl() }}" alt="">
@@ -397,145 +320,18 @@
 	<div class="fixed-sidebar right">
 		<div class="chat-friendz">
 			<ul class="chat-users">
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend1.jpg" alt="">
-						<span class="status f-online"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend2.jpg" alt="">
-						<span class="status f-away"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend3.jpg" alt="">
-						<span class="status f-online"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend4.jpg" alt="">
-						<span class="status f-offline"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend5.jpg" alt="">
-						<span class="status f-online"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend6.jpg" alt="">
-						<span class="status f-online"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend7.jpg" alt="">
-						<span class="status f-offline"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend8.jpg" alt="">
-						<span class="status f-online"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend9.jpg" alt="">
-						<span class="status f-away"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend10.jpg" alt="">
-						<span class="status f-away"></span>
-					</div>
-				</li>
-				<li>
-					<div class="author-thmb">
-						<img src="/vendor/pitnik/images/resources/side-friend8.jpg" alt="">
-						<span class="status f-online"></span>
-					</div>
-				</li>
+				@foreach(auth()->user()->acceptedFriends() as $friend)
+					<li>
+						<a href="{{ route('messages', $friend) }}" title="{{ $friend->name }}" data-toggle="tooltip" data-placement="left">
+							<div class="author-thmb">
+								<img src="{{ $friend->avatarUrl() }}" alt="">
+							</div>
+						</a>
+					</li>
+				@endforeach
 			</ul>
-			<div class="chat-box">
-				<div class="chat-head">
-					<span class="status f-online"></span>
-					<h6>Bucky Barnes</h6>
-					<div class="more">
-						<div class="more-optns"><i class="ti-more-alt"></i>
-							<ul>
-								<li>block chat</li>
-								<li>unblock chat</li>
-								<li>conversation</li>
-							</ul>
-						</div>
-						<span class="close-mesage"><i class="ti-close"></i></span>
-					</div>
-				</div>
-				<div class="chat-list">
-					<ul>
-						<li class="me">
-							<div class="chat-thumb"><img src="/vendor/pitnik/images/resources/chatlist1.jpg" alt=""></div>
-							<div class="notification-event">
-								<span class="chat-message-item">
-									HI, Jack i have faced a problem with your software. are you available now, when i install this i have to received an error.
-								</span>
-								<span class="notification-date"><time datetime="2004-07-24T18:18" class="entry-date updated">Today at 2:12pm</time></span>
-							</div>
-						</li>
-						<li class="you">
-							<div class="chat-thumb"><img src="/vendor/pitnik/images/resources/chatlist2.jpg" alt=""></div>
-							<div class="notification-event">
-								<span class="chat-message-item">
-									Hi tina, Please let me know your purchase code, and show me the screnshot of error.
-								</span>
-								<span class="notification-date"><time datetime="2004-07-24T18:18" class="entry-date updated">Today at 2:14pm</time></span>
-							</div>
-						</li>
-						<li class="me">
-							<div class="chat-thumb"><img src="/vendor/pitnik/images/resources/chatlist1.jpg" alt=""></div>
-							<div class="notification-event">
-								<span class="chat-message-item">
-									Yes, sure please wait a while, i ll show you the complete error list. Thank you.
-								</span>
-								<span class="notification-date"><time datetime="2004-07-24T18:18" class="entry-date updated">Today at 2:15pm</time></span>
-							</div>
-						</li>
-					</ul>
-					<form class="text-box">
-						<textarea placeholder="Post enter to post..."></textarea>
-						<div class="add-smiles">
-							<span title="add icon" class="em em-expressionless"></span>
-							<div class="smiles-bunch">
-								<i class="em em---1"></i>
-								<i class="em em-smiley"></i>
-								<i class="em em-anguished"></i>
-								<i class="em em-laughing"></i>
-								<i class="em em-angry"></i>
-								<i class="em em-astonished"></i>
-								<i class="em em-blush"></i>
-								<i class="em em-disappointed"></i>
-								<i class="em em-worried"></i>
-								<i class="em em-kissing_heart"></i>
-								<i class="em em-rage"></i>
-								<i class="em em-stuck_out_tongue"></i>
-							</div>
-						</div>
-						
-						<button type="submit"></button>
-					</form>
-				</div>
-			</div>
 		</div>
-	</div><!-- right sidebar user chat -->
-	
+	</div><!-- right sidebar friends -->
 	<div class="fixed-sidebar left">
 		<div class="menu-left">
 			<ul class="left-menu">
@@ -556,7 +352,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="timeline-friends.html" title="Friends" data-toggle="tooltip" data-placement="right">
+					<a href="{{ route('profile.friends', auth()->user()) }}" title="Friends" data-toggle="tooltip" data-placement="right">
 						<i class="fa-regular fa-user"></i>
 					</a>
 				</li>
@@ -566,7 +362,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="chat-messenger.html" title="Messages" data-toggle="tooltip" data-placement="right">
+					<a href="{{ route('messages') }}" title="Messages" data-toggle="tooltip" data-placement="right">
 						<i class="fa-regular fa-messages"></i>
 					</a>
 				</li>
@@ -612,7 +408,7 @@
 						<li><a href="classified.html" title="">Classified</a></li>
 						<li><a href="pitpoint.html" title="">PitPoint</a></li>
 						<li><a href="pittube.html" title="">Pittube</a></li>
-						<li><a href="chat-messenger.html" title="">Messenger</a></li>
+						<li><a href="{{ route('messages') }}" title="">Messenger</a></li>
 					</ul>
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-microphone"></i> Podcast</a>
@@ -654,7 +450,7 @@
 						<li><a href="timeline-photos.html" title="">Timeline Photos</a></li>
 						<li><a href="timeline-videos.html" title="">Timeline Videos</a></li>
 						<li><a href="timeline-groups.html" title="">Timeline Groups</a></li>
-						<li><a href="timeline-friends.html" title="">Timeline Friends</a></li>
+						<li><a href="{{ route('profile.friends', auth()->user()) }}" title="">Timeline Friends</a></li>
 						<li><a href="timeline-friends2.html" title="">Timeline Friends-2</a></li>
 						<li><a href="about.html" title="">Timeline About</a></li>
 						<li><a href="blog-posts.html" title="">Timeline Blog</a></li>
@@ -688,7 +484,7 @@
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-star-christmas"></i> Featured</a>
 					<ul class="submenu">
-						<li><a href="chat-messenger.html" title="">Messenger (Chatting)</a></li>
+						<li><a href="{{ route('messages') }}" title="">Messenger (Chatting)</a></li>
 						<li><a href="{{ route('notifications') }}" title="">Notifications</a></li>
 						<li><a href="badges.html" title="">Badges</a></li>
 						<li><a href="faq.html" title="">Faq's</a></li>

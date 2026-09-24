@@ -66,5 +66,7 @@ class DatabaseSeeder extends Seeder
                 'type' => 'like',
             ]);
         }
+
+        $this->call(MessageSeeder::class);
     }
 }

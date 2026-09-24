@@ -242,6 +242,7 @@ new #[\Livewire\Attributes\Layout('layouts::bare')] class extends Component
 															@default
 																<a href="#" title="" class="main-btn" wire:click.prevent="sendFriendRequest">Add Friend</a>
 														@endswitch
+														<a href="{{ route('messages', $user) }}" title="" class="main-btn">Message</a>
 													@endif
 												</div>
 											</div>
