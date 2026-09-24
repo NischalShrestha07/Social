@@ -1,25 +1,18 @@
 <?php
 
-use App\Models\Comment;
+use App\Livewire\Concerns\InteractsWithPosts;
 use App\Models\Friendship;
-use App\Models\Post;
 use App\Models\User;
 use App\Notifications\FriendRequestAccepted;
 use App\Notifications\FriendRequestReceived;
-use App\Notifications\PostCommented;
-use App\Notifications\PostLiked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 new #[\Livewire\Attributes\Layout('layouts::bare')] class extends Component
 {
-    use WithFileUploads;
+    use InteractsWithPosts, WithFileUploads;
 
     public User $user;
-
-    public string $body = '';
-
-    public $image = null;
 
     public $avatar = null;
 
@@ -115,76 +108,8 @@ new #[\Livewire\Attributes\Layout('layouts::bare')] class extends Component
         $this->avatar = null;
     }
 
-    public function createPost(): void
+    protected function refreshPosts(): void
     {
-        $validated = $this->validate([
-            'body' => 'required_without:image|nullable|string|max:5000',
-            'image' => 'nullable|image|max:5120',
-        ]);
-
-        $imagePath = $this->image?->store('posts', 'public');
-
-        auth()->user()->posts()->create([
-            'body' => $validated['body'] ?? null,
-            'image_path' => $imagePath,
-        ]);
-
-        $this->reset(['body', 'image']);
-        $this->loadPosts();
-    }
-
-    public function toggleLike(int $postId): void
-    {
-        $post = Post::findOrFail($postId);
-
-        $existing = $post->reactions()->where('user_id', auth()->id())->where('type', 'like');
-
-        if ($existing->exists()) {
-            $existing->delete();
-        } else {
-            $post->reactions()->create(['user_id' => auth()->id(), 'type' => 'like']);
-
-            if ($post->user_id !== auth()->id()) {
-                $post->user->notify(new PostLiked(auth()->user(), $post));
-            }
-        }
-
-        $this->loadPosts();
-    }
-
-    public function toggleCommentLike(int $commentId): void
-    {
-        $comment = Comment::findOrFail($commentId);
-
-        $existing = $comment->reactions()->where('user_id', auth()->id())->where('type', 'like');
-
-        if ($existing->exists()) {
-            $existing->delete();
-        } else {
-            $comment->reactions()->create(['user_id' => auth()->id(), 'type' => 'like']);
-        }
-
-        $this->loadPosts();
-    }
-
-    public function addComment(int $postId, string $body): void
-    {
-        $body = trim($body);
-
-        if ($body === '') {
-            return;
-        }
-
-        $comment = Comment::create([
-            'post_id' => $postId,
-            'user_id' => auth()->id(),
-            'body' => $body,
-        ]);
-
-        if ($comment->post->user_id !== auth()->id()) {
-            $comment->post->user->notify(new PostCommented(auth()->user(), $comment->post));
-        }
-
         $this->loadPosts();
     }
 };
@@ -269,7 +194,7 @@ new #[\Livewire\Attributes\Layout('layouts::bare')] class extends Component
 														<i class="fa fa-ellipsis-h"></i>
 														<ul class="more-dropdown">
 															<li>
-																<a href="timeline-groups.html">Profile Groups</a>
+																<a href="{{ route('groups') }}">Groups</a>
 															</li>
 															<li>
 																<a href="statistics.html">Profile Analytics</a>

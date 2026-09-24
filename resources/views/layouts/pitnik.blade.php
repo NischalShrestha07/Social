@@ -104,7 +104,7 @@
 						<li><a href="timeline.html" title="">Timeline</a></li>
 						<li><a href="timeline-photos.html" title="">Timeline Photos</a></li>
 						<li><a href="timeline-videos.html" title="">Timeline Videos</a></li>
-						<li><a href="timeline-groups.html" title="">Timeline Groups</a></li>
+						<li><a href="{{ route('groups') }}" title="">Timeline Groups</a></li>
 						<li><a href="{{ route('profile.friends', auth()->user()) }}" title="">Timeline Friends</a></li>
 						<li><a href="timeline-friends2.html" title="">Timeline Friends-2</a></li>
 						<li><a href="about.html" title="">Timeline About</a></li>
@@ -357,6 +357,11 @@
 					</a>
 				</li>
 				<li>
+					<a href="{{ route('groups') }}" title="Groups" data-toggle="tooltip" data-placement="right">
+						<i class="fa-regular fa-users"></i>
+					</a>
+				</li>
+				<li>
 					<a href="fav-page.html" title="Favourit page" data-toggle="tooltip" data-placement="right">
 						<i class="fa-regular fa-star-christmas"></i>
 					</a>
@@ -449,7 +454,7 @@
 						<li><a href="timeline.html" title="">Timeline</a></li>
 						<li><a href="timeline-photos.html" title="">Timeline Photos</a></li>
 						<li><a href="timeline-videos.html" title="">Timeline Videos</a></li>
-						<li><a href="timeline-groups.html" title="">Timeline Groups</a></li>
+						<li><a href="{{ route('groups') }}" title="">Timeline Groups</a></li>
 						<li><a href="{{ route('profile.friends', auth()->user()) }}" title="">Timeline Friends</a></li>
 						<li><a href="timeline-friends2.html" title="">Timeline Friends-2</a></li>
 						<li><a href="about.html" title="">Timeline About</a></li>

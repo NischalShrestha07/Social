@@ -13,7 +13,7 @@ the user first:
 1. **Phase 1 (done):** auth, profile, newsfeed, post/comment/like — the core loop.
 2. Friends/follow + notifications + stories (real, not the static demo bar).
 3. **Phase 3 (done):** 1:1 chat/messenger (Livewire polling).
-4. Groups/pages.
+4. **Phase 4a (done):** Groups. Phase 4b (next): FB-style Pages.
 5. Marketplace / jobs / forum / video / ads — secondary modules.
 
 ## Architecture decisions
@@ -63,6 +63,33 @@ the user first:
   change needed. Not built (add if asked): group chats, attachments/emoji
   picker, typing indicators, online presence, message delete/edit, search,
   "load older" beyond the last 100 messages.
+- **Post interactions live in one trait: `App\Livewire\Concerns\InteractsWithPosts`**
+  (`$body`/`$image`, `createPost`, `toggleLike`, `toggleCommentLike`,
+  `addComment` + PostLiked/PostCommented notifications). Used by feed,
+  timeline and group pages; host must also `use WithFileUploads`. Hooks:
+  `postAttributes()` (extra columns for new posts, e.g. `group_id`),
+  `authorizeCreatePost()`, `refreshPosts()` (default `unset($this->posts)`;
+  timeline overrides to reload its eager-loaded posts). Any page rendering
+  `<x-pitnik.post-card>` should use this trait rather than re-implementing.
+  `authorizePostInteraction()` gates every like/comment by the post's group
+  (post ids come from the client, so any page's `toggleLike(id)` could target
+  a private-group post).
+- **Groups (Phase 4a):** `groups` (slug route key, `privacy` public|private),
+  `group_members` pivot (`role` admin|member, `status` pending|approved),
+  nullable `posts.group_id`. **Group posts never appear on feed/timeline** —
+  feed queries `whereNull('group_id')` and `User::posts()` itself filters it,
+  so the timeline and its post count exclude them too. `Group::join()`
+  (public → approved, private → pending + `GroupJoinRequested` to admins) and
+  `Group::leave()` (also cancels a request; owner can never leave).
+  `GroupPolicy`: `view` (public or approved member), `post` (member),
+  `update`/`manageMembers` (admin) — enforced in every action. Member-admin
+  actions (`g/{slug}/members`) re-fetch the target through the group's own
+  pivot with the expected status, so client-supplied user ids can't touch
+  non-members. Not built (add if asked): group edit/settings page, delete
+  group, group search, invite friends, demote admin, group posts in feed.
+- `<x-pitnik.friend-box mode="custom">` renders its slot as the action area
+  (used by group members); root and `group-box` merge `$attributes` so
+  `wire:key` lands on the root.
 - Fortify's post-login redirect (`config/fortify.php` → `home`) points at
   `/feed`, not `/dashboard`.
 
@@ -75,7 +102,7 @@ the user first:
   shell — Flux sidebar overlay top-left, Pitnik header pushed mid-page.
 - **The dev-agent boundary guard hook blocks Bash commands containing any
   `/word` token it reads as an absolute path** — including HTML closing tags
-  (`</div>`, `</a>`), regex like `s/.../\1/`, etc. Put such content in a script
+  (`</div>`, `</a>`, `</i>`), regex like `s/.../\1/`, etc. Put such content in a script
   file under `storage/logs/` via Write and run that instead.
 - **`@{{ ... }}` in Blade is the escape for literal braces**, not "@ + echo" —
   write `{{ '@'.$user->username }}` for an @handle.

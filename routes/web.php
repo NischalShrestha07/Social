@@ -17,6 +17,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::livewire('notifications', 'pages::notifications')->name('notifications');
 
+    Route::livewire('groups', 'pages::groups')->name('groups');
+
+    Route::livewire('groups/create', 'pages::group-create')->name('groups.create');
+
+    Route::livewire('g/{group:slug}', 'pages::group')->name('groups.show');
+
+    Route::livewire('g/{group:slug}/members', 'pages::group-members')->name('groups.members');
+
     Route::livewire('messages/{user:username?}', 'pages::messenger')->name('messages');
 });
 

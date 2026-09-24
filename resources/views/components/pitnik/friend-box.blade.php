@@ -1,6 +1,6 @@
 @props(['user', 'mode' => 'friend', 'friendshipId' => null])
 
-<div class="col-lg-3 col-md-6 col-sm-6">
+<div {{ $attributes->merge(['class' => 'col-lg-3 col-md-6 col-sm-6']) }}>
 	<div class="friend-box">
 		<figure>
 			<img src="{{ $user->avatarUrl() }}" alt="">
@@ -17,6 +17,8 @@
 			@elseif($mode === 'request')
 				<a class="send-mesg" href="#" title="" wire:click.prevent="acceptRequest({{ $friendshipId }})">Accept</a>
 				<a class="send-mesg" href="#" title="" wire:click.prevent="declineRequest({{ $friendshipId }})" style="margin-left:6px;">Decline</a>
+			@elseif($mode === 'custom')
+				{{ $slot }}
 			@endif
 		</div>
 	</div>

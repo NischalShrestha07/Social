@@ -43,9 +43,18 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return 'username';
     }
 
+    // Profile-wall posts only; group posts live on their group page.
     public function posts(): HasMany
     {
-        return $this->hasMany(Post::class)->latest();
+        return $this->hasMany(Post::class)->whereNull('group_id')->latest();
+    }
+
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class, 'group_members')
+            ->withPivot('role', 'status')
+            ->wherePivot('status', 'approved')
+            ->withTimestamps();
     }
 
     public function conversations(): BelongsToMany
