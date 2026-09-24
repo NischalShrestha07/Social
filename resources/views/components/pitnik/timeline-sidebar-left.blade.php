@@ -134,19 +134,19 @@
 										<ul class="naves">
 											<li>
 												<i class="ti-clipboard"></i>
-												<a href="newsfeed.html" title="">News feed</a>
+												<a href="{{ route('feed') }}" title="">News feed</a>
 											</li>
 											<li>
 												<i class="ti-mouse-alt"></i>
-												<a href="inbox.html" title="">Inbox</a>
+												<a href="{{ route('messages') }}" title="">Inbox</a>
 											</li>
 											<li>
 												<i class="ti-files"></i>
-												<a href="fav-page.html" title="">My pages</a>
+												<a href="{{ route('pages') }}" title="">My pages</a>
 											</li>
 											<li>
 												<i class="ti-user"></i>
-												<a href="timeline-friends.html" title="">friends</a>
+												<a href="{{ route('profile.friends', auth()->user()) }}" title="">friends</a>
 											</li>
 											<li>
 												<i class="ti-image"></i>
@@ -158,11 +158,11 @@
 											</li>
 											<li>
 												<i class="ti-comments-smiley"></i>
-												<a href="messages.html" title="">Messages</a>
+												<a href="{{ route('messages') }}" title="">Messages</a>
 											</li>
 											<li>
 												<i class="ti-bell"></i>
-												<a href="notifications.html" title="">Notifications</a>
+												<a href="{{ route('notifications') }}" title="">Notifications</a>
 											</li>
 											<li>
 												<i class="ti-share"></i>

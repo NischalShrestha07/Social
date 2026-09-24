@@ -106,7 +106,7 @@
 						<li><a href="timeline-videos.html" title="">Timeline Videos</a></li>
 						<li><a href="{{ route('groups') }}" title="">Timeline Groups</a></li>
 						<li><a href="{{ route('profile.friends', auth()->user()) }}" title="">Timeline Friends</a></li>
-						<li><a href="timeline-friends2.html" title="">Timeline Friends-2</a></li>
+						<li><a href="{{ route('profile.friends', auth()->user()) }}" title="">Timeline Friends-2</a></li>
 						<li><a href="about.html" title="">Timeline About</a></li>
 						<li><a href="blog-posts.html" title="">Timeline Blog</a></li>
 						<li><a href="friends-birthday.html" title="">Friends' Birthday</a></li>
@@ -116,13 +116,13 @@
 				</li>
 				<li><span>Favourit Page</span>
 					<ul>
-						<li><a href="fav-page.html" title="">Favourit Page</a></li>
+						<li><a href="{{ route('pages') }}" title="">Favourit Page</a></li>
 						<li><a href="games.html" title="">Games</a></li>
-						<li><a href="fav-favers.html" title="">Fav Page Likers</a></li>
+						<li><a href="{{ route('pages') }}" title="">Fav Page Likers</a></li>
 						<li><a href="fav-events.html" title="">Fav Events</a></li>
 						<li><a href="fav-event-invitations.html" title="">Fav Event Invitations</a></li>
 						<li><a href="event-calendar.html" title="">Event Calendar</a></li>
-						<li><a href="fav-page-create.html" title="">Create New Page</a></li>
+						<li><a href="{{ route('pages.create') }}" title="">Create New Page</a></li>
 						<li><a href="price-plans.html" title="">Price Plan</a></li>
 					</ul>
 				</li>
@@ -141,7 +141,7 @@
 						<li><a href="badges.html" title="">Badges</a></li>
 						<li><a href="faq.html" title="">Faq's</a></li>
 						<li><a href="contribution.html" title="">Contriburion Page</a></li>
-						<li><a href="manage-page.html" title="">Manage Page</a></li>
+						<li><a href="{{ route('pages') }}" title="">Manage Page</a></li>
 						<li><a href="weather-forecast.html" title="">weather-forecast</a></li>
 						<li><a href="statistics.html" title="">Statics/Analytics</a></li>
 						<li><a href="shop-cart.html" title="">Shop Cart</a></li>
@@ -362,7 +362,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="fav-page.html" title="Favourit page" data-toggle="tooltip" data-placement="right">
+					<a href="{{ route('pages') }}" title="Favourit page" data-toggle="tooltip" data-placement="right">
 						<i class="fa-regular fa-star-christmas"></i>
 					</a>
 				</li>
@@ -456,7 +456,7 @@
 						<li><a href="timeline-videos.html" title="">Timeline Videos</a></li>
 						<li><a href="{{ route('groups') }}" title="">Timeline Groups</a></li>
 						<li><a href="{{ route('profile.friends', auth()->user()) }}" title="">Timeline Friends</a></li>
-						<li><a href="timeline-friends2.html" title="">Timeline Friends-2</a></li>
+						<li><a href="{{ route('profile.friends', auth()->user()) }}" title="">Timeline Friends-2</a></li>
 						<li><a href="about.html" title="">Timeline About</a></li>
 						<li><a href="blog-posts.html" title="">Timeline Blog</a></li>
 						<li><a href="friends-birthday.html" title="">Friends' Birthday</a></li>
@@ -469,13 +469,13 @@
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-heart"></i> Favourit Page</a>
 					<ul class="submenu">
-						<li><a href="fav-page.html" title="">Favourit Page</a></li>
+						<li><a href="{{ route('pages') }}" title="">Favourit Page</a></li>
 						<li><a href="games.html" title="">Games</a></li>
-						<li><a href="fav-favers.html" title="">Fav Page Likers</a></li>
+						<li><a href="{{ route('pages') }}" title="">Fav Page Likers</a></li>
 						<li><a href="fav-events.html" title="">Fav Events</a></li>
 						<li><a href="fav-event-invitations.html" title="">Fav Event Invitations</a></li>
 						<li><a href="event-calendar.html" title="">Event Calendar</a></li>
-						<li><a href="fav-page-create.html" title="">Create New Page</a></li>
+						<li><a href="{{ route('pages.create') }}" title="">Create New Page</a></li>
 						<li><a href="price-plans.html" title="">Price Plan</a></li>
 					</ul>
 				</li>
@@ -494,7 +494,7 @@
 						<li><a href="badges.html" title="">Badges</a></li>
 						<li><a href="faq.html" title="">Faq's</a></li>
 						<li><a href="contribution.html" title="">Contriburion Page</a></li>
-						<li><a href="manage-page.html" title="">Manage Page</a></li>
+						<li><a href="{{ route('pages') }}" title="">Manage Page</a></li>
 						<li><a href="weather-forecast.html" title="">weather-forecast</a></li>
 						<li><a href="statistics.html" title="">Statics/Analytics</a></li>
 						<li><a href="shop-cart.html" title="">Shop Cart</a></li>

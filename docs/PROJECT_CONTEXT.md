@@ -13,7 +13,7 @@ the user first:
 1. **Phase 1 (done):** auth, profile, newsfeed, post/comment/like — the core loop.
 2. Friends/follow + notifications + stories (real, not the static demo bar).
 3. **Phase 3 (done):** 1:1 chat/messenger (Livewire polling).
-4. **Phase 4a (done):** Groups. Phase 4b (next): FB-style Pages.
+4. **Phase 4 (done):** 4a Groups, 4b FB-style Pages.
 5. Marketplace / jobs / forum / video / ads — secondary modules.
 
 ## Architecture decisions
@@ -87,6 +87,25 @@ the user first:
   pivot with the expected status, so client-supplied user ids can't touch
   non-members. Not built (add if asked): group edit/settings page, delete
   group, group search, invite friends, demote admin, group posts in feed.
+- **Pages (Phase 4b):** `pages` (slug route key, `category` from the fixed
+  `Page::CATEGORIES` list validated with `Rule::in`, `website` validated
+  `url:http,https`), `page_likes` pivot, nullable `posts.page_id`. Single owner,
+  no page admins/editors (v1). **Page posts are authored "as the page"**:
+  `user_id` stays the owner (audit trail), but `<x-pitnik.post-card>` renders
+  the author via `Post::authorName()/authorAvatar()/authorUrl()`, which switch
+  to the page when `page_id` is set — use those helpers, never `$post->user`
+  directly, for the author header. **Page posts never appear on
+  feed/timeline** (feed `whereNull('page_id')`, `User::posts()` filters it,
+  same as group posts). Page posts are public, so
+  `InteractsWithPosts::authorizePostInteraction()` needs no page check.
+  `Page::like()` skips the owner and duplicates and sends `PageLiked` to the
+  owner. `PagePolicy` `post`/`update`/`delete` = owner; the manage page
+  authorizes in `mount()` and again in `save()`/`deletePage()`. Renaming a
+  page regenerates its slug (`uniqueSlug($name, $ignoreId)`) and redirects to
+  the new manage URL. Deleting a page cascades its posts and likes (FKs).
+  Not built (add if asked): page admins/roles, insights/analytics, page
+  reviews/ratings, invite-to-like, page search, "follow" separate from like,
+  page posts in feed, messaging a page.
 - `<x-pitnik.friend-box mode="custom">` renders its slot as the action area
   (used by group members); root and `group-box` merge `$attributes` so
   `wire:key` lands on the root.
@@ -104,6 +123,10 @@ the user first:
   `/word` token it reads as an absolute path** — including HTML closing tags
   (`</div>`, `</a>`, `</i>`), regex like `s/.../\1/`, etc. Put such content in a script
   file under `storage/logs/` via Write and run that instead.
+- In a tinker verification script, `Livewire::test(...)->status()` is not a
+  getter — it returns the Testable, and a mount-time `Gate::authorize` failure
+  does not throw. Use `->assertForbidden()` / `->assertOk()` inside
+  try/catch instead.
 - **`@{{ ... }}` in Blade is the escape for literal braces**, not "@ + echo" —
   write `{{ '@'.$user->username }}` for an @handle.
 - **PostToolUse formatter hook strips unused imports/closure captures

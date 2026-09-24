@@ -4,12 +4,12 @@
 	<div class="user-post">
 		<div class="friend-info">
 			<figure>
-				<a href="{{ route('profile.show', $post->user) }}" title="">
-					<img src="{{ $post->user->avatarUrl() }}" alt="">
+				<a href="{{ $post->authorUrl() }}" title="">
+					<img src="{{ $post->authorAvatar() }}" alt="">
 				</a>
 			</figure>
 			<div class="friend-name">
-				<ins><a href="{{ route('profile.show', $post->user) }}" title="">{{ $post->user->name }}</a></ins>
+				<ins><a href="{{ $post->authorUrl() }}" title="">{{ $post->authorName() }}</a></ins>
 				<span><i class="fa fa-globe"></i> published: {{ $post->created_at->diffForHumans() }}</span>
 			</div>
 			<div class="post-meta">

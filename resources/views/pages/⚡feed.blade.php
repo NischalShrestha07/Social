@@ -19,7 +19,7 @@ new #[Title('Newsfeed'), \Livewire\Attributes\Layout('layouts::bare')] class ext
     #[Computed]
     public function posts()
     {
-        return Post::whereNull('group_id')->with([
+        return Post::whereNull('group_id')->whereNull('page_id')->with([
             'user',
             'comments.user',
             'comments.reactions',

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-#[Fillable(['user_id', 'group_id', 'body', 'image_path'])]
+#[Fillable(['user_id', 'group_id', 'page_id', 'body', 'image_path'])]
 class Post extends Model
 {
     use HasFactory;
@@ -22,6 +22,27 @@ class Post extends Model
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
+    }
+
+    public function page(): BelongsTo
+    {
+        return $this->belongsTo(Page::class);
+    }
+
+    // Page posts are authored "as the page"; user_id stays the owner for the audit trail.
+    public function authorName(): string
+    {
+        return $this->page_id ? $this->page->name : $this->user->name;
+    }
+
+    public function authorAvatar(): string
+    {
+        return $this->page_id ? $this->page->avatarUrl() : $this->user->avatarUrl();
+    }
+
+    public function authorUrl(): string
+    {
+        return $this->page_id ? route('pages.show', $this->page) : route('profile.show', $this->user);
     }
 
     public function comments(): HasMany
