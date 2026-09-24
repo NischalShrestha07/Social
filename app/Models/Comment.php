@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-#[Fillable(['body', 'parent_id'])]
+#[Fillable(['post_id', 'user_id', 'body', 'parent_id'])]
 class Comment extends Model
 {
     public function post(): BelongsTo

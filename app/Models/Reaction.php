@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-#[Fillable(['type'])]
+#[Fillable(['user_id', 'type'])]
 class Reaction extends Model
 {
     public function user(): BelongsTo
