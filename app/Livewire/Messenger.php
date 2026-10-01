@@ -44,18 +44,19 @@ class Messenger extends Component
             return;
         }
 
+        /** @var User $me */
         $me = auth()->user();
         $conversation = $this->activeConversation();
 
         if (! $conversation && $this->targetUserId) {
             $target = User::findOrFail($this->targetUserId);
-            abort_if($target->is($me), 403);
+            abort_if($target->id === $me->id, 403);
             $conversation = Conversation::between($me, $target);
             $this->conversationId = $conversation->id;
             $this->targetUserId = null;
         }
 
-        abort_unless($conversation, 403);
+        abort_unless($conversation !== null, 403);
 
         $conversation->messages()->create(['user_id' => $me->id, 'body' => $body]);
         $conversation->update(['last_message_at' => now()]);
@@ -65,12 +66,14 @@ class Messenger extends Component
         $this->dispatch('message-sent');
     }
 
-    // Scoped through the user's own conversations, so a non-participant always gets null.
     protected function activeConversation(): ?Conversation
     {
-        return $this->conversationId
+        /** @var Conversation|null $conv */
+        $conv = $this->conversationId
             ? auth()->user()->conversations()->with('users')->find($this->conversationId)
             : null;
+
+        return $conv;
     }
 
     public function render(): View

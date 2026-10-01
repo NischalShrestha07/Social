@@ -9,6 +9,7 @@ use App\Notifications\PostLiked;
 use Illuminate\Support\Facades\Gate;
 
 // Host component must also `use WithFileUploads` (the composer's image field).
+/** @phpstan-ignore-next-line */
 trait InteractsWithPosts
 {
     public string $body = '';

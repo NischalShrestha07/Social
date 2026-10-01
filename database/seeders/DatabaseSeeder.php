@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
             'password' => 'password',
             'email_verified_at' => now(),
         ]));
-        
 
         $posts = collect([
             [0, 'Excited to try out this new platform!'],

@@ -31,16 +31,19 @@ class Page extends Model
         return 'slug';
     }
 
+    /** @return BelongsTo<User, $this> */
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    /** @return BelongsToMany<User, $this> */
     public function likers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'page_likes')->withTimestamps();
     }
 
+    /** @return HasMany<Post, $this> */
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class)->latest();
@@ -59,7 +62,9 @@ class Page extends Model
         }
 
         $this->likers()->attach($user->id);
-        $this->owner->notify(new PageLiked($user, $this));
+        /** @var User $owner */
+        $owner = $this->owner;
+        $owner->notify(new PageLiked($user, $this));
     }
 
     public function unlike(User $user): void

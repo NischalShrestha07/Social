@@ -24,8 +24,12 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $name = fake()->unique()->name();
+
         return [
-            'name' => fake()->name(),
+            'name' => $name,
+            'username' => static::uniqueUsername($name),
+            'bio' => fake()->optional()->sentence(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
@@ -34,6 +38,23 @@ class UserFactory extends Factory
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
         ];
+    }
+
+    /**
+     * `username` is the User route key, is unique, and is generated from the
+     * name the same way CreateNewUser does it at registration.
+     */
+    protected static function uniqueUsername(string $name): string
+    {
+        $base = Str::slug($name) ?: 'user';
+        $username = $base;
+        $suffix = 1;
+
+        while (User::where('username', $username)->exists()) {
+            $username = $base.'-'.$suffix++;
+        }
+
+        return $username;
     }
 
     /**

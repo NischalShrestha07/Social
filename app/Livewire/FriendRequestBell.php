@@ -3,29 +3,40 @@
 namespace App\Livewire;
 
 use App\Models\Friendship;
+use App\Models\User;
 use App\Notifications\FriendRequestAccepted;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class FriendRequestBell extends Component
 {
     public function acceptRequest(int $friendshipId): void
     {
-        $friendship = Friendship::where('friend_id', auth()->id())->findOrFail($friendshipId);
+        /** @var User $me */
+        $me = Auth::user();
+        $friendship = Friendship::where('friend_id', $me->id)->findOrFail($friendshipId);
         $friendship->update(['status' => 'accepted']);
 
-        $friendship->user->notify(new FriendRequestAccepted(auth()->user()));
+        /** @var User $requester */
+        $requester = $friendship->user;
+        $requester->notify(new FriendRequestAccepted($me));
     }
 
     public function declineRequest(int $friendshipId): void
     {
-        Friendship::where('friend_id', auth()->id())->findOrFail($friendshipId)->delete();
+        /** @var User $me */
+        $me = Auth::user();
+        Friendship::where('friend_id', $me->id)->findOrFail($friendshipId)->delete();
     }
 
     public function render(): View
     {
+        /** @var User $me */
+        $me = Auth::user();
+
         return view('livewire.friend-request-bell', [
-            'requests' => auth()->user()->pendingRequestsReceived()->take(5),
+            'requests' => $me->pendingRequestsReceived()->take(5),
         ]);
     }
 }

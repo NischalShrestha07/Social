@@ -21,7 +21,11 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 /**
  * @property int $id
  * @property string $name
+ * @property string $username
  * @property string $email
+ * @property string|null $bio
+ * @property string|null $avatar_path
+ * @property string|null $cover_path
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
@@ -43,33 +47,42 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return 'username';
     }
 
-    // Profile-wall posts only; group posts live on their group page.
+    /**
+     * Profile-wall posts only; group posts live on their group page.
+     *
+     * @return HasMany<Post, $this>
+     */
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class)->whereNull('group_id')->whereNull('page_id')->latest();
     }
 
+    /** @return HasMany<Page, $this> */
     public function ownedPages(): HasMany
     {
         return $this->hasMany(Page::class, 'owner_id');
     }
 
+    /** @return BelongsToMany<Page, $this> */
     public function likedPages(): BelongsToMany
     {
         return $this->belongsToMany(Page::class, 'page_likes')->withTimestamps();
     }
 
+    /** @return BelongsToMany<Group, $this, GroupMember, 'pivot'> */
     public function groups(): BelongsToMany
     {
         return $this->belongsToMany(Group::class, 'group_members')
+            ->using(GroupMember::class)
             ->withPivot('role', 'status')
             ->wherePivot('status', 'approved')
             ->withTimestamps();
     }
 
+    /** @return BelongsToMany<Conversation, $this, ConversationUser, 'pivot'> */
     public function conversations(): BelongsToMany
     {
-        return $this->belongsToMany(Conversation::class)->withPivot('last_read_at')->withTimestamps();
+        return $this->belongsToMany(Conversation::class)->using(ConversationUser::class)->withPivot('last_read_at')->withTimestamps();
     }
 
     public function unreadMessagesCount(): int
@@ -83,6 +96,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             ->count();
     }
 
+    /** @return HasMany<Story, $this> */
     public function stories(): HasMany
     {
         return $this->hasMany(Story::class)->latest();
@@ -118,6 +132,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $friendship->user_id === $this->id ? 'pending_sent' : 'pending_received';
     }
 
+    /** @return Collection<int, User> */
     public function acceptedFriends(): Collection
     {
         $friendIds = Friendship::where('status', 'accepted')
@@ -133,6 +148,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return User::whereIn('id', $friendIds)->get();
     }
 
+    /** @return Collection<int, Friendship> */
     public function pendingRequestsReceived(): Collection
     {
         return Friendship::with('user')

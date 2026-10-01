@@ -19,33 +19,40 @@ class Group extends Model
         return 'slug';
     }
 
+    /** @return BelongsTo<User, $this> */
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    /** @return BelongsToMany<User, $this, GroupMember, 'pivot'> */
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'group_members')
+            ->using(GroupMember::class)
             ->withPivot('role', 'status')
             ->withTimestamps();
     }
 
+    /** @return BelongsToMany<User, $this, GroupMember, 'pivot'> */
     public function approvedMembers(): BelongsToMany
     {
         return $this->members()->wherePivot('status', 'approved');
     }
 
+    /** @return BelongsToMany<User, $this, GroupMember, 'pivot'> */
     public function pendingMembers(): BelongsToMany
     {
         return $this->members()->wherePivot('status', 'pending');
     }
 
+    /** @return BelongsToMany<User, $this, GroupMember, 'pivot'> */
     public function admins(): BelongsToMany
     {
         return $this->approvedMembers()->wherePivot('role', 'admin');
     }
 
+    /** @return HasMany<Post, $this> */
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class)->latest();
@@ -56,7 +63,6 @@ class Group extends Model
         return $this->privacy === 'private';
     }
 
-    // 'none' | 'pending' | 'member' | 'admin'
     public function membershipStatus(?User $user): string
     {
         if (! $user) {
@@ -69,11 +75,10 @@ class Group extends Model
             return 'none';
         }
 
-        if ($pivot->status === 'pending') {
-            return 'pending';
-        }
+        /** @var GroupMember $pivot */
+        $role = $pivot->role === 'admin' ? 'admin' : 'member';
 
-        return $pivot->role === 'admin' ? 'admin' : 'member';
+        return $pivot->status === 'pending' ? 'pending' : $role;
     }
 
     public function isMember(?User $user): bool
@@ -86,7 +91,6 @@ class Group extends Model
         return $this->membershipStatus($user) === 'admin';
     }
 
-    // Public groups admit immediately; private ones create a pending request for the admins.
     public function join(User $user): void
     {
         if ($this->membershipStatus($user) !== 'none') {
@@ -101,7 +105,6 @@ class Group extends Model
         }
     }
 
-    // Also cancels a pending request. The owner can never leave.
     public function leave(User $user): void
     {
         if ($user->id === $this->owner_id) {

@@ -15,11 +15,13 @@ class Story extends Model
         return ['expires_at' => 'datetime'];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @param Builder<Story> $query */
     public function scopeActive(Builder $query): void
     {
         $query->where('expires_at', '>', now());

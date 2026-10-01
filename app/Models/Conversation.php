@@ -17,16 +17,19 @@ class Conversation extends Model
         return ['last_message_at' => 'datetime'];
     }
 
+    /** @return BelongsToMany<User, $this, ConversationUser, 'pivot'> */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('last_read_at')->withTimestamps();
+        return $this->belongsToMany(User::class)->using(ConversationUser::class)->withPivot('last_read_at')->withTimestamps();
     }
 
+    /** @return HasMany<Message, $this> */
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
     }
 
+    /** @return HasOne<Message, $this> */
     public function latestMessage(): HasOne
     {
         return $this->hasOne(Message::class)->latestOfMany();
@@ -56,7 +59,10 @@ class Conversation extends Model
 
     public function otherParticipant(User $me): ?User
     {
-        return $this->users->firstWhere('id', '!=', $me->id);
+        /** @var User|null $other */
+        $other = $this->users->firstWhere('id', '!=', $me->id);
+
+        return $other;
     }
 
     public function hasParticipant(User $user): bool
@@ -66,7 +72,9 @@ class Conversation extends Model
 
     public function unreadCountFor(User $user): int
     {
-        $lastReadAt = $this->users->firstWhere('id', $user->id)?->pivot->last_read_at;
+        /** @var ConversationUser|null $cu */
+        $cu = $this->users->firstWhere('id', $user->id);
+        $lastReadAt = $cu?->last_read_at;
 
         return $this->messages()
             ->where('user_id', '!=', $user->id)
