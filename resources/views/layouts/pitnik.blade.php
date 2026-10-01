@@ -66,10 +66,8 @@
 						<li><a href="soundnik.html" title="">Soundnik</a></li>
 						<li><a href="soundnik-detail.html" title="">Soundnik Single</a></li>
 						<li><a href="{{ route('jobs.create') }}" title="">Post a Job</a></li>
-						<li><a href="shop.html" title="">Shop</a></li>
-						<li><a href="classified.html" title="">Classified</a></li>
-						<li><a href="pitpoint.html" title="">PitPoint</a></li>
-						<li><a href="pittube.html" title="">Pittube</a></li>
+						<li><a href="{{ route('marketplace') }}" title="">Shop</a></li>
+						<li><a href="{{ route('marketplace.create') }}" title="">Sell an Item</a></li>
 						<li><a href="{{ route('messages') }}" title="">Messenger</a></li>
 					</ul>
 				</li>
@@ -128,6 +126,12 @@
 				<li><span>Forum</span>
 					<ul>
 						<li><a href="{{ route('forum') }}" title="">Forum</a></li>
+					</ul>
+				</li>
+				<li><span>Marketplace</span>
+					<ul>
+						<li><a href="{{ route('marketplace') }}" title="">Marketplace</a></li>
+						<li><a href="{{ route('marketplace.create') }}" title="">Sell an Item</a></li>
 					</ul>
 				</li>
 				<li><span>Featured</span>
@@ -353,6 +357,11 @@
 					</a>
 				</li>
 				<li>
+					<a href="{{ route('marketplace') }}" title="Marketplace" data-toggle="tooltip" data-placement="right">
+						<i class="fa-solid fa-store"></i>
+					</a>
+				</li>
+				<li>
 					<a href="{{ route('profile.friends', auth()->user()) }}" title="Friends" data-toggle="tooltip" data-placement="right">
 						<i class="fa-regular fa-user"></i>
 					</a>
@@ -410,10 +419,8 @@
 						<li><a href="soundnik.html" title="">Soundnik</a></li>
 						<li><a href="soundnik-detail.html" title="">Soundnik Single</a></li>
 						<li><a href="{{ route('jobs') }}" title="">Pitjob</a></li>
-						<li><a href="shop.html" title="">Shop</a></li>
-						<li><a href="classified.html" title="">Classified</a></li>
-						<li><a href="pitpoint.html" title="">PitPoint</a></li>
-						<li><a href="pittube.html" title="">Pittube</a></li>
+						<li><a href="{{ route('marketplace') }}" title="">Shop</a></li>
+						<li><a href="{{ route('marketplace.create') }}" title="">Sell an Item</a></li>
 						<li><a href="{{ route('messages') }}" title="">Messenger</a></li>
 					</ul>
 				</li>
@@ -482,6 +489,12 @@
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-brands fa-forumbee"></i> Forum</a>
 					<ul class="submenu">
 						<li><a href="{{ route('forum') }}" title="">Forum</a></li>
+					</ul>
+				</li>
+				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-solid fa-store"></i> Marketplace</a>
+					<ul class="submenu">
+						<li><a href="{{ route('marketplace') }}" title="">Marketplace</a></li>
+						<li><a href="{{ route('marketplace.create') }}" title="">Sell an Item</a></li>
 					</ul>
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-star-christmas"></i> Featured</a>

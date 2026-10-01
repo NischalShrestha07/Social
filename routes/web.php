@@ -53,6 +53,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('forum/{category:slug}', 'pages::forum-category')->name('forum.category');
 
     Route::livewire('forum/{category:slug}/create', 'pages::forum-topic-create')->name('forum.topic.create');
+
+    Route::livewire('marketplace', 'pages::marketplace')->name('marketplace');
+
+    Route::livewire('marketplace/create', 'pages::listing-create')->name('marketplace.create');
+
+    // Declared before the show route so "edit" can never be read as a slug.
+    Route::livewire('marketplace/{listing:slug}/edit', 'pages::listing-edit')->name('marketplace.listing.edit');
+
+    Route::livewire('marketplace/{listing:slug}', 'pages::listing')->name('marketplace.listing');
 });
 
 require __DIR__.'/settings.php';

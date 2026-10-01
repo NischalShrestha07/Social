@@ -138,6 +138,32 @@ the user first:
   `ForumPostReplied` to prior participants, once each (deduped by author).
   Not built (add if asked): topic edit, attachments/images in replies, search
   across all forums, moderation queue, admin category management UI.
+- **Marketplace (Phase 7):** `marketplace_listings` (slug route key, `price`
+  cast `decimal:2`, `currency`/`category`/`condition` from the
+  `MarketplaceListing::CURRENCIES`/`CATEGORIES`/`CONDITIONS` const lists
+  validated with `Rule::in`, nullable `image_path` under `listings/` on the
+  `public` disk) + `listing_saves` pivot (wishlist) + `marketplace_offers`
+  (`marketplace_listing_id`/`user_id` unique, `status` pending|accepted|
+  declined). **`->scopeAvailable()` hides sold listings** from the browse grid;
+  the seller still sees them on their own listing page, everyone else gets a
+  403 (policy `view`). **Sellers cannot save or offer on their own listing**,
+  and `makeOffer` also refuses sold listings. One offer per buyer per listing
+  is enforced both in the page (validation error) and by the unique index.
+  **Accepting an offer marks the listing sold** — a sold listing drops out of
+  the grid immediately, so accepting and selling are the same transition. All
+  offers are re-resolved through `$listing->offers()`, so an offer id from the
+  client can only ever address an offer on the listing currently loaded — a
+  seller authorized on *their* listing still gets a 404 for another seller's
+  offer id. `updateOffer()` ignores any status outside
+  accepted/declined rather than trusting the client string. `savers()` is a
+  `belongsToMany(User::class, 'listing_saves')` with `User::savedListings()`
+  as the inverse; the "saved only" filter uses `whereHas('savers', ...)`.
+  Two notifications (`MarketplaceOfferReceived` to the seller,
+  `MarketplaceOfferStatusChanged` to the buyer). `marketplace/{listing}/edit`
+  is declared **before** `marketplace/{listing:slug}` so "edit" can never be
+  read as a slug. Not built (add if asked): cart/checkout, payments,
+  multi-image galleries, listing comments, categories managed in the DB,
+  shipping/delivery, buyer's own "my offers" page.
 - `<x-pitnik.friend-box mode="custom">` renders its slot as the action area
   (used by group members); root and `group-box` merge `$attributes` so
   `wire:key` lands on the root.
@@ -179,16 +205,31 @@ the user first:
 ## Known accepted gaps (Phase 1)
 - Left/right sidebar widgets (weather, badges, "who's following", trending,
   birthdays, etc.) are static demo content, not wired to real data.
-- ~100 other template pages still 404 (messenger, notifications, marketplace,
-  video, groups) — expected, later phases.
 - **Tests: `tests/Feature/` now covers feed, posts, comments, reactions,
-  messenger, groups, pages, settings, jobs and forum (90 tests).**
+  messenger, groups, pages, settings, jobs, forum and marketplace (119 tests).**
   Run with `php artisan test --no-coverage`. The gate for every phase is
   `composer test` = `pint --parallel --test` + `phpstan analyse` (level 7) +
   `php artisan test`. Static analysis was clean as of Phase 6.
-  - Two testing patterns worth keeping: **mount-time `Gate::authorize()`
-    failures do not surface as `assertForbidden()` under `Livewire::test`** —
-    assert authorization by hitting the HTTP route with
-    `$this->actingAs($user)->get(route(...))->assertForbidden()`. And a factory
-    must satisfy **every NOT NULL column** (`users.username` is the route key,
-    so `UserFactory` sets it).
+  - Testing patterns worth keeping:
+    - **Mount-time `Gate::authorize()` failures do not surface as
+      `assertForbidden()` under `Livewire::test`** — a `Gate::authorize()` in
+      `mount()` throws `AuthorizationException` before the Testable exists, so
+      the component renders a 404/error page instead. Assert authorization by
+      hitting the HTTP route with
+      `$this->actingAs($user)->get(route(...))->assertForbidden()`, or assert
+      the policy directly with `Gate::forUser($user)->allows(...)`.
+    - `Gate::authorize()` *inside* an action does surface, so
+      `->call('method')->assertForbidden()` is fine there.
+    - A factory must satisfy **every NOT NULL column** (`users.username` is
+      the route key, so `UserFactory` sets it).
+    - `->for($seller)` on a factory infers the relationship name from the model
+      class (`User` → `user`). When the relation is named something else
+      (`MarketplaceListing::seller()`), pass it explicitly:
+      `->for($seller, 'seller')`.
+    - Faker's `words($n, false)` is typed `array|string`, which phpstan level 7
+      rejects when the value is passed to a `string` parameter. Compose the
+      string by hand instead (`.` concatenation of `->word()` calls).
+    - A `#[Url]` query-string property is state: reading it back after a
+      redirect-then-render cycle can throw `Invalid Livewire snapshot
+      structure`. Prefer not adding one unless a page really needs tab state
+      in the URL.

@@ -96,6 +96,18 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             ->count();
     }
 
+    /** @return HasMany<MarketplaceListing, $this> */
+    public function listings(): HasMany
+    {
+        return $this->hasMany(MarketplaceListing::class, 'user_id');
+    }
+
+    /** @return BelongsToMany<MarketplaceListing, $this> */
+    public function savedListings(): BelongsToMany
+    {
+        return $this->belongsToMany(MarketplaceListing::class, 'listing_saves')->withTimestamps();
+    }
+
     /** @return HasMany<Story, $this> */
     public function stories(): HasMany
     {
