@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Models;
+
+use Database\Factories\ForumPostFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
+/**
+ * @property int $forum_topic_id
+ * @property int $user_id
+ * @property string $body
+ */
+#[Fillable(['forum_topic_id', 'user_id', 'body'])]
+class ForumPost extends Model
+{
+    /** @use HasFactory<ForumPostFactory> */
+    use HasFactory;
+
+    /** @return BelongsTo<ForumTopic, $this> */
+    public function topic(): BelongsTo
+    {
+        return $this->belongsTo(ForumTopic::class, 'forum_topic_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /** @return MorphMany<Reaction, $this> */
+    public function reactions(): MorphMany
+    {
+        return $this->morphMany(Reaction::class, 'reactable');
+    }
+
+    public function isLikedBy(?User $user): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        return $this->reactions()->where('user_id', $user->id)->where('type', 'like')->exists();
+    }
+
+    /** Reactions are polymorphic, so posts and comments share one `Reaction` table. */
+    public function toggleLike(User $user): void
+    {
+        $existing = $this->reactions()->where('user_id', $user->id)->where('type', 'like')->first();
+
+        if ($existing) {
+            $existing->delete();
+
+            return;
+        }
+
+        $this->reactions()->create(['user_id' => $user->id, 'type' => 'like']);
+    }
+
+    public function likesCount(): int
+    {
+        return $this->reactions()->where('type', 'like')->count();
+    }
+}

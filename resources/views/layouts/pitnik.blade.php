@@ -127,10 +127,7 @@
 				</li>
 				<li><span>Forum</span>
 					<ul>
-						<li><a href="forum.html" title="">Forum</a></li>
-						<li><a href="forum-create-topic.html" title="">Forum Create Topic</a></li>
-						<li><a href="forum-open-topic.html" title="">Forum Open Topic</a></li>
-						<li><a href="forums-category.html" title="">Forum Category</a></li>
+						<li><a href="{{ route('forum') }}" title="">Forum</a></li>
 					</ul>
 				</li>
 				<li><span>Featured</span>
@@ -351,6 +348,11 @@
 					</a>
 				</li>
 				<li>
+					<a href="{{ route('forum') }}" title="Forum" data-toggle="tooltip" data-placement="right">
+						<i class="fa-brands fa-forumbee"></i>
+					</a>
+				</li>
+				<li>
 					<a href="{{ route('profile.friends', auth()->user()) }}" title="Friends" data-toggle="tooltip" data-placement="right">
 						<i class="fa-regular fa-user"></i>
 					</a>
@@ -479,10 +481,7 @@
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-brands fa-forumbee"></i> Forum</a>
 					<ul class="submenu">
-						<li><a href="forum.html" title="">Forum</a></li>
-						<li><a href="forum-create-topic.html" title="">Forum Create Topic</a></li>
-						<li><a href="forum-open-topic.html" title="">Forum Open Topic</a></li>
-						<li><a href="forums-category.html" title="">Forum Category</a></li>
+						<li><a href="{{ route('forum') }}" title="">Forum</a></li>
 					</ul>
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-star-christmas"></i> Featured</a>

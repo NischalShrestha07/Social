@@ -106,6 +106,38 @@ the user first:
   Not built (add if asked): page admins/roles, insights/analytics, page
   reviews/ratings, invite-to-like, page search, "follow" separate from like,
   page posts in feed, messaging a page.
+- **Jobs (Phase 5):** `job_postings` (slug route key, `type` from
+  `JobPosting::TYPES`, `work_mode` from `JobPosting::WORK_MODES`, `expires_at`
+  cast to `datetime`, `is_open`) + `job_applications`
+  (`job_posting_id`/`user_id` unique, `status` pending|accepted|rejected).
+  **`->scopeOpen()` hides closed *and* expired postings** from every listing
+  and from the show route, so a non-owner gets a 403 rather than a dead link —
+  use the scope, never a raw query, when reading job postings. One posting per
+  user, enforced in the create page's `mount()`. `isAcceptingApplications()`
+  uses `expires_at->endOfDay()->isFuture()` (Carbon has no
+  `isFutureOrToday()`). Applicants are always re-resolved through
+  `$posting->applications()`, so client-supplied ids can't review another
+  posting's applications. `JobPostingPolicy` = owner for
+  update/delete/manageApplicants/application review, applicant for withdraw.
+  Two notifications (`JobApplicationReceived`, `JobApplicationStatusChanged`).
+  Not built (add if asked): editing a posting, application withdraw UI on the
+  applicant side, job search, saved jobs.
+- **Forum (Phase 6):** `forum_categories` (slug route key, `position`) →
+  `forum_topics` (slug route key, `is_pinned`, `is_locked`, `locked_by`,
+  `locked_at`, `last_posted_at`) → `forum_posts`. **A topic's opening post
+  lives in `forum_topics.body`**; `forum_posts` are only replies, so
+  `ForumTopic::replies()` is just `posts()->oldest()`.
+  `ForumPost::toggleLike()` reuses the polymorphic `Reaction` table (same as
+  posts/comments). Locking is a v1 moderation model: **the locker and the
+  topic author can still reply and either can unlock** — deliberate, not an
+  oversight. `forum/topic/{topic}` is declared **before** `forum/{category:slug}`
+  in `routes/web.php` so no category slug can shadow the literal segment
+  "topic". Route model binding on the topic page uses `#[Locked] $topicId` +
+  a `#[Computed]` re-fetch, so the topic is never trusted from the client and
+  every action re-authorizes against a freshly loaded row. Replying fans out
+  `ForumPostReplied` to prior participants, once each (deduped by author).
+  Not built (add if asked): topic edit, attachments/images in replies, search
+  across all forums, moderation queue, admin category management UI.
 - `<x-pitnik.friend-box mode="custom">` renders its slot as the action area
   (used by group members); root and `group-box` merge `$attributes` so
   `wire:key` lands on the root.
@@ -147,8 +179,16 @@ the user first:
 ## Known accepted gaps (Phase 1)
 - Left/right sidebar widgets (weather, badges, "who's following", trending,
   birthdays, etc.) are static demo content, not wired to real data.
-- ~100 other template pages still 404 (messenger, notifications, forum,
-  marketplace, jobs, video, groups) — expected, later phases.
-- No dedicated test suite — verification is via `php -l`, `php artisan
-  route:list`, and manual/curl render checks (matches this session's approach;
-  revisit if the user wants formal tests later).
+- ~100 other template pages still 404 (messenger, notifications, marketplace,
+  video, groups) — expected, later phases.
+- **Tests: `tests/Feature/` now covers feed, posts, comments, reactions,
+  messenger, groups, pages, settings, jobs and forum (90 tests).**
+  Run with `php artisan test --no-coverage`. The gate for every phase is
+  `composer test` = `pint --parallel --test` + `phpstan analyse` (level 7) +
+  `php artisan test`. Static analysis was clean as of Phase 6.
+  - Two testing patterns worth keeping: **mount-time `Gate::authorize()`
+    failures do not surface as `assertForbidden()` under `Livewire::test`** —
+    assert authorization by hitting the HTTP route with
+    `$this->actingAs($user)->get(route(...))->assertForbidden()`. And a factory
+    must satisfy **every NOT NULL column** (`users.username` is the route key,
+    so `UserFactory` sets it).

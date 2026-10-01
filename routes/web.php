@@ -44,6 +44,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('jobs/{job:slug}/manage', 'pages::job-manage')->name('jobs.manage');
 
     Route::livewire('jobs/{job:slug}/applicants', 'pages::job-applicants')->name('jobs.applicants');
+
+    Route::livewire('forum', 'pages::forum')->name('forum');
+
+    // Declared before the category routes so a category can never shadow "topic".
+    Route::livewire('forum/topic/{topic:slug}', 'pages::forum-topic')->name('forum.topic');
+
+    Route::livewire('forum/{category:slug}', 'pages::forum-category')->name('forum.category');
+
+    Route::livewire('forum/{category:slug}/create', 'pages::forum-topic-create')->name('forum.topic.create');
 });
 
 require __DIR__.'/settings.php';
