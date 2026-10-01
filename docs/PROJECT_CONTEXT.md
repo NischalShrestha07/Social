@@ -202,6 +202,45 @@ the user first. Phases 0–8 are now done:
   `wire:key` lands on the root.
 - Fortify's post-login redirect (`config/fortify.php` → `home`) points at
   `/feed`, not `/dashboard`.
+- **Local signups are pre-verified, gated on
+  `config('fortify.pre_verify_registrations')`** (defaults to
+  `APP_ENV === local`, override with `FORTIFY_PRE_VERIFY`). Reason: local runs
+  `MAIL_MAILER=log`, so the verification link never reaches an inbox, and
+  *every* authenticated route is behind the `verified` middleware — an
+  unverified signup lands on `/email/verify` and can never reach any page.
+  `email_verified_at` is deliberately kept out of `User`'s `#[Fillable]` so it
+  can never be mass-assigned; `CreateNewUser` uses `forceFill` and skips the
+  `Verified` event. Every non-local environment keeps Fortify's normal flow.
+
+## Running the app locally
+
+Two failure modes make the app look completely broken after a fresh clone. Both
+are worth checking first when something "just doesn't work".
+
+**1. A stale `public/hot` file means zero CSS and zero JS.**
+`public/hot` is written by `npm run dev` and points Vite at the dev server. If
+the dev server is not actually running (or was killed) but `public/hot` still
+exists, every `@vite` reference resolves to `http://127.0.0.1:5173/...` and
+returns 404 — the app renders as unstyled, non-interactive HTML. Forms still
+POST, so the symptom is confusing: pages "load" but nothing is styled and no
+Livewire/Alpine behaviour fires.
+
+Pick one, not both:
+```bash
+npm run dev     # writes public/hot, assets served by the Vite dev server
+# or
+rm -f public/hot && npm run build   # baked assets from public/build
+```
+`public/hot` and `public/build` are both gitignored, so a fresh clone needs
+one of the above before anything looks right.
+
+**2. A fresh signup cannot get past `/email/verify`.** See
+`pre_verify_registrations` under Architecture decisions above.
+
+Seed logins: `test@example.com`, `amy@example.com`, `jackdoe`/`jack@example.com`,
+`sarah@example.com`, `hiring@acme.test`, `seeker@example.test`,
+`seller@example.test`, `buyer@example.test`, `creator@example.test`,
+`viewer@example.test` — all with password `password`.
 
 ## Recurring gotchas
 - **Every Pitnik full-page component needs
@@ -226,6 +265,13 @@ the user first. Phases 0–8 are now done:
   resulting file, the hook deletes it before the next Edit lands. Always add
   an import together with its first real usage in the same Edit call, or
   grep-verify it survived immediately after.
+- **`SeedCommand` runs every seeder inside `Model::unguarded()`**, so
+  `email_verified_at` and other non-`#[Fillable]` columns *do* get mass-assigned
+  by `User::create([...])` in seeders. That is the intended way seeded users get
+  verified emails. But it means a seeder executed outside `db:seed` (e.g.
+  `(new VideoSeeder)->run()` in tinker) silently drops those columns and creates
+  unverified users — don't debug seeding via tinker and conclude the seeder is
+  broken.
 - The Pitnik template ships a lot of **dead demo markup with no real backing
   data or wiring** (share/report/send-message popups, an image-comment modal
   with hardcoded fake users, a full-screen story-slideshow with
@@ -242,8 +288,8 @@ the user first. Phases 0–8 are now done:
   (badges, podcast, pitpoint, shop cart, news pages, …) — expected, not part of
   the app's feature set.
 - **Tests: `tests/Feature/` now covers feed, posts, comments, reactions,
-  messenger, groups, pages, settings, jobs, forum, marketplace and video
-  (163 tests).** Run with `php artisan test --no-coverage`. The gate for every
+  messenger, groups, pages, settings, auth, jobs, forum, marketplace and video
+  (166 tests).** Run with `php artisan test --no-coverage`. The gate for every
   phase is `composer test` = `pint --parallel --test` + `phpstan analyse`
   (level 7) + `php artisan test`. Static analysis was clean as of Phase 8.
   - Testing patterns worth keeping:

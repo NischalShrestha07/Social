@@ -25,12 +25,21 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'username' => $this->uniqueUsername($input['name']),
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
+
+        if (config('fortify.pre_verify_registrations')) {
+            // See config/fortify.php. `email_verified_at` is deliberately not
+            // fillable so it can never be set through mass assignment, and
+            // forceFill skips the Verified event, which would try to send mail.
+            $user->forceFill(['email_verified_at' => now()])->save();
+        }
+
+        return $user;
     }
 
     protected function uniqueUsername(string $name): string

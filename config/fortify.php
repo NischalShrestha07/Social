@@ -135,6 +135,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Pre-Verify Registrations
+    |--------------------------------------------------------------------------
+    |
+    | Local development runs MAIL_MAILER=log, so the verification link is
+    | written to storage/logs/laravel.log instead of an inbox. Because every
+    | authenticated route in this app sits behind the `verified` middleware,
+    | an unverified signup is a dead end: register, get bounced to
+    | /email/verify, never receive the mail, never reach any page.
+    |
+    | When enabled, registration marks the new account as already verified so
+    | local signups land straight in the app. Every other environment is
+    | unaffected and keeps Fortify's normal verification flow.
+    |
+    */
+
+    'pre_verify_registrations' => env('FORTIFY_PRE_VERIFY', env('APP_ENV', 'production') === 'local'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Passkeys
     |--------------------------------------------------------------------------
     |
