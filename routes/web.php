@@ -62,6 +62,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('marketplace/{listing:slug}/edit', 'pages::listing-edit')->name('marketplace.listing.edit');
 
     Route::livewire('marketplace/{listing:slug}', 'pages::listing')->name('marketplace.listing');
+
+    Route::livewire('pittube', 'pages::videos')->name('videos');
+
+    Route::livewire('pittube/channels/create', 'pages::channel-create')->name('videos.channel.create');
+
+    // Declared before the show route so "watch" can never be read as a slug.
+    Route::livewire('pittube/watch/{video:slug}', 'pages::video')->name('videos.show');
+
+    Route::livewire('pittube/{video:slug}/edit', 'pages::video-edit')->name('videos.edit');
+
+    Route::livewire('pittube/channel/{channel:slug}', 'pages::channel')->name('videos.channel');
+
+    Route::livewire('pittube/channel/{channel:slug}/manage', 'pages::channel-manage')->name('videos.channel.manage');
+
+    Route::livewire('pittube/channel/{channel:slug}/upload', 'pages::video-upload')->name('videos.upload');
 });
 
 require __DIR__.'/settings.php';

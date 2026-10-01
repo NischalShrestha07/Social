@@ -9,12 +9,16 @@ marketplace, jobs, video platform, events, ad-center). Template assets
 
 ## Standing priorities
 Build is phased — don't jump ahead of the current phase without checking with
-the user first:
+the user first. Phases 0–8 are now done:
 1. **Phase 1 (done):** auth, profile, newsfeed, post/comment/like — the core loop.
 2. Friends/follow + notifications + stories (real, not the static demo bar).
 3. **Phase 3 (done):** 1:1 chat/messenger (Livewire polling).
 4. **Phase 4 (done):** 4a Groups, 4b FB-style Pages.
-5. Marketplace / jobs / forum / video / ads — secondary modules.
+5. **Phase 5 (done):** Jobs board with applications.
+6. **Phase 6 (done):** Forum — categories, topics, replies.
+7. **Phase 7 (done):** Marketplace — listings, saves, offers.
+8. **Phase 8 (done):** Video (Pittube) — channels, uploads, comments.
+9. Not built: events, ad-center. Each is open if asked.
 
 ## Architecture decisions
 - **Stack: Blade + Livewire, not API+SPA.** Chosen because Pitnik is
@@ -164,6 +168,35 @@ the user first:
   read as a slug. Not built (add if asked): cart/checkout, payments,
   multi-image galleries, listing comments, categories managed in the DB,
   shipping/delivery, buyer's own "my offers" page.
+- **Video / Pittube (Phase 8):** `video_channels` (slug route key, denormalized
+  `subscribers_count`) → `videos` (slug route key, `visibility` from
+  `Video::VISIBILITIES` = public|unlisted|private, `duration_seconds`,
+  `views_count`, nullable `video_path`/`thumbnail_path`) →
+  `video_comments` (nullable `parent_id`), plus `channel_subscriptions`.
+  One channel per user, enforced by `unique:video_channels,name` in the create
+  form. **Visibility rules: `Video::scopePublic()` is the browse grid**;
+  unlisted videos are reachable only by direct link; private videos are the
+  uploader's and the channel owner's only (`VideoPolicy::view`). A channel page
+  shows public+unlisted to strangers and everything to the owner.
+  `VideoChannel::subscribe()`/`unsubscribe()` maintain `subscribers_count`
+  and no-op on a duplicate or a self-subscribe, so the counter can't drift;
+  `NewChannelSubscriber` goes to the channel owner. **Video comments use two
+  relations on purpose**: `comments()` is top-level only (`whereNull('parent_id')`,
+  what the page paginates) and `allComments()` is everything — reply creation
+  and moderation go through `allComments()`, so a reply is never silently
+  dropped for having a parent. Comment ids sent by the client are re-fetched
+  through `allComments()`, and a reply's parent is re-fetched through the
+  video, so neither can be pointed at another video's thread. Video likes reuse
+  the polymorphic `Reaction` table (`Video::toggleLike()`), same as posts,
+  comments and forum posts. **Uploading a video to a channel always sets
+  `user_id` to the channel owner**, not the acting session. Three
+  notifications (`VideoLiked`, `VideoCommented`, `NewChannelSubscriber`).
+  Route layout is `pittube`, `pittube/watch/{video:slug}`, and
+  `pittube/channel/{channel:slug}` — `watch` and `edit` are declared before
+  the bare `pittube/{video:slug}` pattern. Not built (add if asked):
+  transcoding/thumbnails from the video itself, playlists, live streaming,
+  watch history, view-count increments (the column exists but nothing writes it
+  yet), watch-later, video reactions beyond likes, channel analytics.
 - `<x-pitnik.friend-box mode="custom">` renders its slot as the action area
   (used by group members); root and `group-box` merge `$attributes` so
   `wire:key` lands on the root.
@@ -205,11 +238,14 @@ the user first:
 ## Known accepted gaps (Phase 1)
 - Left/right sidebar widgets (weather, badges, "who's following", trending,
   birthdays, etc.) are static demo content, not wired to real data.
+- Most of the original Pitnik template's remaining demo pages still 404
+  (badges, podcast, pitpoint, shop cart, news pages, …) — expected, not part of
+  the app's feature set.
 - **Tests: `tests/Feature/` now covers feed, posts, comments, reactions,
-  messenger, groups, pages, settings, jobs, forum and marketplace (119 tests).**
-  Run with `php artisan test --no-coverage`. The gate for every phase is
-  `composer test` = `pint --parallel --test` + `phpstan analyse` (level 7) +
-  `php artisan test`. Static analysis was clean as of Phase 6.
+  messenger, groups, pages, settings, jobs, forum, marketplace and video
+  (163 tests).** Run with `php artisan test --no-coverage`. The gate for every
+  phase is `composer test` = `pint --parallel --test` + `phpstan analyse`
+  (level 7) + `php artisan test`. Static analysis was clean as of Phase 8.
   - Testing patterns worth keeping:
     - **Mount-time `Gate::authorize()` failures do not surface as
       `assertForbidden()` under `Livewire::test`** — a `Gate::authorize()` in

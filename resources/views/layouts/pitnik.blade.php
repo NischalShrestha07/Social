@@ -73,11 +73,8 @@
 				</li>
 				<li><span>Pittube</span>
 					<ul>
-						<li><a href="pittube.html" title="">Pittube</a></li>
-						<li><a href="pittube-detail.html" title="">Pittube single</a></li>
-						<li><a href="pittube-category.html" title="">Pittube Category</a></li>
-						<li><a href="pittube-channel.html" title="">Pittube Channel</a></li>
-						<li><a href="pittube-search-result.html" title="">Pittube Search Result</a></li>
+						<li><a href="{{ route('videos') }}" title="">Pittube</a></li>
+						<li><a href="{{ route('videos.channel.create') }}" title="">Create Channel</a></li>
 					</ul>
 				</li>
 				<li><span>PitPoint</span>
@@ -267,7 +264,7 @@
 			 <ul class="hot-links">
 				<li><a class="dark" href="timeline.html" title="Timeline"><i class="fa-regular fa-face-smile fa-fw"></i></a></li>
 				<li><a class="blue news-options" href="#" title="News Options"><i class="fa-regular fa-heart"></i></a></li>
-				<li><a class="bloodred" href="pittube.html" title="Pittube"><i class="fa-regular fa-play"></i></a></li>
+				<li><a class="bloodred" href="{{ route('videos') }}" title="Pittube"><i class="fa-regular fa-play"></i></a></li>
 				<li><a class="pint" href="pitrest.html" title="Pitrest"><i class="fa-regular fa-thumbtack"></i></a></li>
 				<li><a class="bizsound" href="soundnik.html" title="Soundnik"><i class="fa-regular fa-music"></i></a></li>
 				<li><a class="navy" href="podcast.html" title="Podcast"><i class="fa-regular fa-microphone"></i></a></li>
@@ -362,6 +359,11 @@
 					</a>
 				</li>
 				<li>
+					<a href="{{ route('videos') }}" title="Pittube" data-toggle="tooltip" data-placement="right">
+						<i class="fa-regular fa-play"></i>
+					</a>
+				</li>
+				<li>
 					<a href="{{ route('profile.friends', auth()->user()) }}" title="Friends" data-toggle="tooltip" data-placement="right">
 						<i class="fa-regular fa-user"></i>
 					</a>
@@ -427,17 +429,14 @@
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-microphone"></i> Podcast</a>
 					<ul class="submenu">
 						<li><a href="podcast.html" title="">Podcast</a></li>
-						<li><a href="podcast-all.html" title="">Pittube All</a></li>
+						<li><a href="{{ route('videos') }}" title="">Pittube All</a></li>
 						<li><a href="podcast-personal.html" title="">Podcast Personal</a></li>
 					</ul>
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-play"></i> Pittube</a>
 					<ul class="submenu">
-						<li><a href="pittube.html" title="">Pittube</a></li>
-						<li><a href="pittube-detail.html" title="">Pittube single</a></li>
-						<li><a href="pittube-category.html" title="">Pittube Category</a></li>
-						<li><a href="pittube-channel.html" title="">Pittube Channel</a></li>
-						<li><a href="pittube-search-result.html" title="">Pittube Search Result</a></li>
+						<li><a href="{{ route('videos') }}" title="">Pittube</a></li>
+						<li><a href="{{ route('videos.channel.create') }}" title="">Create Channel</a></li>
 					</ul>
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-heart"></i> PitPoint</a>

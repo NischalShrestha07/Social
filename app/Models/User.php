@@ -108,6 +108,24 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $this->belongsToMany(MarketplaceListing::class, 'listing_saves')->withTimestamps();
     }
 
+    /** @return HasMany<VideoChannel, $this> */
+    public function channels(): HasMany
+    {
+        return $this->hasMany(VideoChannel::class, 'user_id');
+    }
+
+    /** @return HasMany<Video, $this> */
+    public function videos(): HasMany
+    {
+        return $this->hasMany(Video::class);
+    }
+
+    /** @return BelongsToMany<VideoChannel, $this> */
+    public function subscriptions(): BelongsToMany
+    {
+        return $this->belongsToMany(VideoChannel::class, 'channel_subscriptions')->withTimestamps();
+    }
+
     /** @return HasMany<Story, $this> */
     public function stories(): HasMany
     {
