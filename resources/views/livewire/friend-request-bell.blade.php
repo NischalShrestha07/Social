@@ -1,3 +1,4 @@
+@php($requests = auth()->user()->pendingRequestsReceived()->take(5))
 <li>
 	<a href="{{ route('friend-requests') }}" title="Friend Requests" data-ripple="">
 		@if($requests->count())

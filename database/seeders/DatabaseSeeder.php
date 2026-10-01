@@ -67,6 +67,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $this->call([MessageSeeder::class, GroupSeeder::class, PageSeeder::class]);
+        $this->call([MessageSeeder::class, GroupSeeder::class, PageSeeder::class, JobSeeder::class]);
     }
 }

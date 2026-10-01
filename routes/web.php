@@ -34,6 +34,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('p/{page:slug}/manage', 'pages::page-manage')->name('pages.manage');
 
     Route::livewire('messages/{user:username?}', 'pages::messenger')->name('messages');
+
+    Route::livewire('jobs', 'pages::jobs')->name('jobs');
+
+    Route::livewire('jobs/create', 'pages::job-create')->name('jobs.create');
+
+    Route::livewire('jobs/{job:slug}', 'pages::job-show')->name('jobs.show');
+
+    Route::livewire('jobs/{job:slug}/manage', 'pages::job-manage')->name('jobs.manage');
+
+    Route::livewire('jobs/{job:slug}/applicants', 'pages::job-applicants')->name('jobs.applicants');
 });
 
 require __DIR__.'/settings.php';

@@ -32,11 +32,6 @@ class FriendRequestBell extends Component
 
     public function render(): View
     {
-        /** @var User $me */
-        $me = Auth::user();
-
-        return view('livewire.friend-request-bell', [
-            'requests' => $me->pendingRequestsReceived()->take(5),
-        ]);
+        return view('livewire.friend-request-bell');
     }
 }

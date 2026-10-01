@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/vendor/pitnik/css/style.css">
     <link rel="stylesheet" href="/vendor/pitnik/css/color.css">
     <link rel="stylesheet" href="/vendor/pitnik/css/responsive.css">
-    <style>.logout-link{background:none;border:0;padding:0;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;}</style>
+    <style>.logout-link{background:none;border:0;padding:0;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;}.main-btn3{background:#eaeaea;color:#535165;}.widget-shadow h5 a{color:#30305b;}</style>
 </head>
 <body>
 <div class="pitnik-app">
@@ -65,7 +65,7 @@
 						<li><a href="redpit-category.html" title="">Redpit Category</a></li>
 						<li><a href="soundnik.html" title="">Soundnik</a></li>
 						<li><a href="soundnik-detail.html" title="">Soundnik Single</a></li>
-						<li><a href="career.html" title="">Pitjob</a></li>
+						<li><a href="{{ route('jobs.create') }}" title="">Post a Job</a></li>
 						<li><a href="shop.html" title="">Shop</a></li>
 						<li><a href="classified.html" title="">Classified</a></li>
 						<li><a href="pitpoint.html" title="">PitPoint</a></li>
@@ -93,9 +93,8 @@
 				</li>
 				<li><span>Pitjob</span>
 					<ul>
-						<li><a href="career.html" title="">Pitjob</a></li>
-						<li><a href="career-detail.html" title="">Pitjob Detail</a></li>
-						<li><a href="career-search-result.html" title="">Job seach page</a></li>
+						<li><a href="{{ route('jobs') }}" title="">Pitjob</a></li>
+						<li><a href="{{ route('jobs.create') }}" title="">Post a Job</a></li>
 						<li><a href="social-post-detail.html" title="">Social Post Detail</a></li>
 					</ul>
 				</li>
@@ -347,8 +346,8 @@
 					</a>
 				</li>
 				<li>
-					<a href="forum.html" title="Forum" data-toggle="tooltip" data-placement="right">
-						<i class="fa-brands fa-forumbee"></i>
+					<a href="{{ route('jobs') }}" title="Jobs" data-toggle="tooltip" data-placement="right">
+						<i class="fa-regular fa-briefcase"></i>
 					</a>
 				</li>
 				<li>
@@ -408,7 +407,7 @@
 						<li><a href="redpit-category.html" title="">Redpit Category</a></li>
 						<li><a href="soundnik.html" title="">Soundnik</a></li>
 						<li><a href="soundnik-detail.html" title="">Soundnik Single</a></li>
-						<li><a href="career.html" title="">Pitjob</a></li>
+						<li><a href="{{ route('jobs') }}" title="">Pitjob</a></li>
 						<li><a href="shop.html" title="">Shop</a></li>
 						<li><a href="classified.html" title="">Classified</a></li>
 						<li><a href="pitpoint.html" title="">PitPoint</a></li>
@@ -443,9 +442,8 @@
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-graduation-cap"></i> Pitjob</a>
 					<ul class="submenu">
-						<li><a href="career.html" title="">Pitjob</a></li>
-						<li><a href="career-detail.html" title="">Pitjob Detail</a></li>
-						<li><a href="career-search-result.html" title="">Job seach page</a></li>
+						<li><a href="{{ route('jobs') }}" title="">Pitjob</a></li>
+						<li><a href="{{ route('jobs.create') }}" title="">Post a Job</a></li>
 						<li><a href="social-post-detail.html" title="">Social Post Detail</a></li>
 					</ul>
 				</li>
