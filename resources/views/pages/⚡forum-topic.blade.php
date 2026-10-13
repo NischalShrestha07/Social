@@ -31,7 +31,7 @@ new #[Title('Forum Topic'), Layout('layouts::bare')] class extends Component
     {
         return $this->topic()
             ->posts()
-            ->with('user')
+            ->with(['user', 'reactions'])
             ->oldest()
             ->paginate(20);
     }

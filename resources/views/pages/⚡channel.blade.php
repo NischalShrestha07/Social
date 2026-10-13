@@ -4,11 +4,13 @@ use App\Models\Video;
 use App\Models\VideoChannel;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new #[Title('Channel'), Layout('layouts::bare')] class extends Component
 {
+    #[Locked]
     public int $channelId;
 
     public function mount(VideoChannel $channel): void

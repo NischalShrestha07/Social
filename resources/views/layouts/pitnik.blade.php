@@ -95,7 +95,7 @@
 				</li>
 				<li><span>Timeline</span>
 					<ul>
-						<li><a href="timeline.html" title="">Timeline</a></li>
+						<li><a href="{{ route('profile.show', auth()->user()) }}" title="">Timeline</a></li>
 						<li><a href="timeline-photos.html" title="">Timeline Photos</a></li>
 						<li><a href="timeline-videos.html" title="">Timeline Videos</a></li>
 						<li><a href="{{ route('groups') }}" title="">Timeline Groups</a></li>
@@ -146,7 +146,7 @@
 				</li>
 				<li><span>Account Setting</span>
 					<ul>
-						<li><a href="setting.html" title="">Setting</a></li>
+						<li><a href="{{ route('profile.edit') }}" title="">Setting</a></li>
 						<li><a href="privacy.html" title="">Privacy</a></li>
 						<li><a href="support-and-help.html" title="">Support & Help</a></li>
 						<li><a href="support-and-help-detail.html" title="">Support Detail</a></li>
@@ -262,7 +262,7 @@
 			    <span>{{ $pageTitle ?? '' }}</span>
 			 </div>
 			 <ul class="hot-links">
-				<li><a class="dark" href="timeline.html" title="Timeline"><i class="fa-regular fa-face-smile fa-fw"></i></a></li>
+				<li><a href="timeline.html" title="Timeline"><i class="fa-regular fa-face-smile fa-fw"></i></a></li>
 				<li><a class="blue news-options" href="#" title="News Options"><i class="fa-regular fa-heart"></i></a></li>
 				<li><a class="bloodred" href="{{ route('videos') }}" title="Pittube"><i class="fa-regular fa-play"></i></a></li>
 				<li><a class="pint" href="pitrest.html" title="Pitrest"><i class="fa-regular fa-thumbtack"></i></a></li>
@@ -457,7 +457,7 @@
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-list-timeline"></i> Timeline</a>
 					<ul class="submenu">
-						<li><a href="timeline.html" title="">Timeline</a></li>
+						<li><a href="{{ route('profile.show', auth()->user()) }}" title="">Timeline</a></li>
 						<li><a href="timeline-photos.html" title="">Timeline Photos</a></li>
 						<li><a href="timeline-videos.html" title="">Timeline Videos</a></li>
 						<li><a href="{{ route('groups') }}" title="">Timeline Groups</a></li>
@@ -511,7 +511,7 @@
 				</li>
 				<li class="menu-item-has-children"><a class="" href="#" title=""><i class="fa-regular fa-sliders"></i> Account Setting</a>
 					<ul class="submenu">
-						<li><a href="setting.html" title="">Setting</a></li>
+						<li><a href="{{ route('profile.edit') }}" title="">Setting</a></li>
 						<li><a href="privacy.html" title="">Privacy</a></li>
 						<li><a href="support-and-help.html" title="">Support & Help</a></li>
 						<li><a href="support-and-help-detail.html" title="">Support Detail</a></li>
