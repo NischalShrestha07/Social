@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 
 #[Fillable(['post_id', 'user_id', 'body', 'parent_id'])]
 class Comment extends Model
@@ -47,6 +48,13 @@ class Comment extends Model
             return false;
         }
 
-        return $this->reactions()->where('user_id', $user->id)->where('type', 'like')->exists();
+        if (! $this->relationLoaded('reactions')) {
+            return $this->reactions()->where('user_id', $user->id)->where('type', 'like')->exists();
+        }
+
+        /** @var Collection<int, Reaction> $reactions */
+        $reactions = $this->reactions;
+
+        return $reactions->where('user_id', $user->id)->where('type', 'like')->isNotEmpty();
     }
 }

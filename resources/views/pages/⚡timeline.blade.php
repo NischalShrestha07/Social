@@ -33,6 +33,21 @@ new #[\Livewire\Attributes\Layout('layouts::bare')] class extends Component
             return;
         }
 
+        // If they already sent us a request, accept it instead of creating a
+        // duplicate reverse row (the DB only uniquifies one direction).
+        $incoming = Friendship::where('user_id', $this->user->id)
+            ->where('friend_id', auth()->id())
+            ->first();
+
+        if ($incoming) {
+            if ($incoming->status === 'pending') {
+                $incoming->update(['status' => 'accepted']);
+                $this->user->notify(new FriendRequestAccepted(auth()->user()));
+            }
+
+            return;
+        }
+
         Friendship::firstOrCreate([
             'user_id' => auth()->id(),
             'friend_id' => $this->user->id,

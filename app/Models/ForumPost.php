@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $forum_topic_id
@@ -44,7 +45,14 @@ class ForumPost extends Model
             return false;
         }
 
-        return $this->reactions()->where('user_id', $user->id)->where('type', 'like')->exists();
+        if (! $this->relationLoaded('reactions')) {
+            return $this->reactions()->where('user_id', $user->id)->where('type', 'like')->exists();
+        }
+
+        /** @var Collection<int, Reaction> $reactions */
+        $reactions = $this->reactions;
+
+        return $reactions->where('user_id', $user->id)->where('type', 'like')->isNotEmpty();
     }
 
     /** Reactions are polymorphic, so posts and comments share one `Reaction` table. */
@@ -63,6 +71,13 @@ class ForumPost extends Model
 
     public function likesCount(): int
     {
-        return $this->reactions()->where('type', 'like')->count();
+        if (! $this->relationLoaded('reactions')) {
+            return $this->reactions()->where('type', 'like')->count();
+        }
+
+        /** @var Collection<int, Reaction> $reactions */
+        $reactions = $this->reactions;
+
+        return $reactions->where('type', 'like')->count();
     }
 }

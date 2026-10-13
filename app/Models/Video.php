@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
@@ -96,7 +97,14 @@ class Video extends Model
             return false;
         }
 
-        return $this->reactions()->where('user_id', $user->id)->where('type', 'like')->exists();
+        if (! $this->relationLoaded('reactions')) {
+            return $this->reactions()->where('user_id', $user->id)->where('type', 'like')->exists();
+        }
+
+        /** @var Collection<int, Reaction> $reactions */
+        $reactions = $this->reactions;
+
+        return $reactions->where('user_id', $user->id)->where('type', 'like')->isNotEmpty();
     }
 
     /** Reactions are polymorphic, so videos share one `Reaction` table with posts. */
@@ -112,12 +120,22 @@ class Video extends Model
 
         $this->reactions()->create(['user_id' => $user->id, 'type' => 'like']);
 
-        Notification::send($this->uploader, new VideoLiked($this, $user));
+        // Uploaders don't get a notification for liking their own video.
+        if ($this->user_id !== $user->id) {
+            Notification::send($this->uploader, new VideoLiked($this, $user));
+        }
     }
 
     public function likesCount(): int
     {
-        return $this->reactions()->where('type', 'like')->count();
+        if (! $this->relationLoaded('reactions')) {
+            return $this->reactions()->where('type', 'like')->count();
+        }
+
+        /** @var Collection<int, Reaction> $reactions */
+        $reactions = $this->reactions;
+
+        return $reactions->where('type', 'like')->count();
     }
 
     public function comment(string $body, User $author, ?VideoComment $parent = null): VideoComment

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
@@ -61,24 +62,28 @@ class VideoChannel extends Model
             return;
         }
 
-        if ($this->subscribers()->where('users.id', $user->id)->exists()) {
-            return;
-        }
+        DB::transaction(function () use ($user) {
+            if ($this->subscribers()->where('users.id', $user->id)->exists()) {
+                return;
+            }
 
-        $this->subscribers()->attach($user->id);
-        $this->increment('subscribers_count');
+            $this->subscribers()->attach($user->id);
+            $this->increment('subscribers_count');
+        });
 
         Notification::send($this->owner, new NewChannelSubscriber($user, $this));
     }
 
     public function unsubscribe(User $user): void
     {
-        if (! $this->subscribers()->where('users.id', $user->id)->exists()) {
-            return;
-        }
+        DB::transaction(function () use ($user) {
+            if (! $this->subscribers()->where('users.id', $user->id)->exists()) {
+                return;
+            }
 
-        $this->subscribers()->detach($user->id);
-        $this->decrement('subscribers_count');
+            $this->subscribers()->detach($user->id);
+            $this->decrement('subscribers_count');
+        });
     }
 
     public function isSubscribedBy(?User $user): bool

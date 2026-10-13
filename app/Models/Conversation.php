@@ -53,6 +53,15 @@ class Conversation extends Model
             $conversation = static::create();
             $conversation->users()->attach([$a->id, $b->id]);
 
+            // If a concurrent request created the same 1:1 thread between the
+            // find and our attach, drop ours and return the winner instead of
+            // chaining messages onto a duplicate conversation.
+            if (($winner = static::findBetween($a, $b)) && $winner->isNot($conversation)) {
+                $conversation->delete();
+
+                return $winner;
+            }
+
             return $conversation;
         });
     }

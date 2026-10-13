@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
@@ -145,11 +146,13 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             return 'self';
         }
 
+        // If both directions somehow exist, prefer the accepted row, then the
+        // oldest, so the status is deterministic.
         $friendship = Friendship::where(function ($query) use ($other) {
             $query->where('user_id', $this->id)->where('friend_id', $other->id);
         })->orWhere(function ($query) use ($other) {
             $query->where('user_id', $other->id)->where('friend_id', $this->id);
-        })->first();
+        })->orderByRaw("status = 'accepted' DESC")->orderBy('id')->first();
 
         if (! $friendship) {
             return 'none';
@@ -173,7 +176,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             ->map(fn (Friendship $friendship) => $friendship->user_id === $this->id
                 ? $friendship->friend_id
                 : $friendship->user_id
-            );
+            )->filter(fn (int $friendId) => $friendId !== $this->id);
 
         return User::whereIn('id', $friendIds)->get();
     }
@@ -199,6 +202,24 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Fix up denormalized counters before a user is removed. Deleting a user
+     * cascades their channel_subscriptions rows, so every channel they followed
+     * loses a subscriber; without this the counters would drift forever.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user) {
+            $channelIds = DB::table('channel_subscriptions')
+                ->where('user_id', $user->id)
+                ->pluck('video_channel_id');
+
+            if ($channelIds->isNotEmpty()) {
+                VideoChannel::whereIn('id', $channelIds)->decrement('subscribers_count');
+            }
+        });
     }
 
     /**

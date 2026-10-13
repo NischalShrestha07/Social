@@ -14,7 +14,7 @@ new #[Title('Friend Requests'), \Livewire\Attributes\Layout('layouts::bare')] cl
 
     public function acceptRequest(int $friendshipId): void
     {
-        $friendship = Friendship::where('friend_id', auth()->id())->findOrFail($friendshipId);
+        $friendship = Friendship::where('friend_id', auth()->id())->where('status', 'pending')->findOrFail($friendshipId);
         $friendship->update(['status' => 'accepted']);
 
         $friendship->user->notify(new FriendRequestAccepted(auth()->user()));
@@ -22,7 +22,7 @@ new #[Title('Friend Requests'), \Livewire\Attributes\Layout('layouts::bare')] cl
 
     public function declineRequest(int $friendshipId): void
     {
-        Friendship::where('friend_id', auth()->id())->findOrFail($friendshipId)->delete();
+        Friendship::where('friend_id', auth()->id())->where('status', 'pending')->findOrFail($friendshipId)->delete();
     }
 };
 ?>

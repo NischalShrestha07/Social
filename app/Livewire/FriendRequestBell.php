@@ -15,7 +15,7 @@ class FriendRequestBell extends Component
     {
         /** @var User $me */
         $me = Auth::user();
-        $friendship = Friendship::where('friend_id', $me->id)->findOrFail($friendshipId);
+        $friendship = Friendship::where('friend_id', $me->id)->where('status', 'pending')->findOrFail($friendshipId);
         $friendship->update(['status' => 'accepted']);
 
         /** @var User $requester */
@@ -27,7 +27,7 @@ class FriendRequestBell extends Component
     {
         /** @var User $me */
         $me = Auth::user();
-        Friendship::where('friend_id', $me->id)->findOrFail($friendshipId)->delete();
+        Friendship::where('friend_id', $me->id)->where('status', 'pending')->findOrFail($friendshipId)->delete();
     }
 
     public function render(): View

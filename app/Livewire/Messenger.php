@@ -80,7 +80,12 @@ class Messenger extends Component
     {
         $me = auth()->user();
         $active = $this->activeConversation();
-        $active?->markReadFor($me);
+
+        // Only write last_read_at when there is actually something unread —
+        // this component re-renders on every 3s poll.
+        if ($active && $active->unreadCountFor($me) > 0) {
+            $active->markReadFor($me);
+        }
 
         $conversations = $me->conversations()
             ->whereNotNull('last_message_at')
