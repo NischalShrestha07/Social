@@ -75,8 +75,8 @@ new #[Title('Edit Job'), Layout('layouts::bare')] class extends Component
             'location' => $validated['location'],
             'type' => $validated['type'],
             'work_mode' => $validated['workMode'],
-            'salary_min' => $validated['salaryMin'] !== '' ? (int) $validated['salaryMin'] : null,
-            'salary_max' => $validated['salaryMax'] !== '' ? (int) $validated['salaryMax'] : null,
+            'salary_min' => ($validated['salaryMin'] ?? '') === '' ? null : (int) $validated['salaryMin'],
+            'salary_max' => ($validated['salaryMax'] ?? '') === '' ? null : (int) $validated['salaryMax'],
             'expires_at' => $validated['expiresAt'] ?: null,
         ]);
 

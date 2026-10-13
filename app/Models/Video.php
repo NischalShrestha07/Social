@@ -36,6 +36,11 @@ class Video extends Model
     /** @use HasFactory<VideoFactory> */
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::deleting(fn (self $video) => $video->reactions()->delete());
+    }
+
     public const VISIBILITIES = ['public', 'unlisted', 'private'];
 
     public function getRouteKeyName(): string

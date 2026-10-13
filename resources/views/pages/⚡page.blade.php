@@ -142,7 +142,7 @@ new #[Layout('layouts::bare')] class extends Component
 										<div class="your-page">
 											<div class="users-thumb-list" style="padding:0 20px 20px;">
 												@forelse($this->likersPreview as $liker)
-													<a href="{{ route('profile.show', $liker) }}" title="{{ $liker->name }}" data-toggle="tooltip">
+													<a href="{{ route('profile.show', $liker) }}" title="{{ $liker->name }}" data-toggle="tooltip" wire:key="liker-{{ $liker->id }}">
 														<img src="{{ $liker->avatarUrl() }}" alt="">
 													</a>
 												@empty

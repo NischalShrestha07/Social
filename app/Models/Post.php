@@ -24,6 +24,11 @@ class Post extends Model
     /** @use HasFactory<PostFactory> */
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::deleting(fn (self $post) => $post->reactions()->delete());
+    }
+
     /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {

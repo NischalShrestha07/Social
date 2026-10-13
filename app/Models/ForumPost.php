@@ -21,6 +21,11 @@ class ForumPost extends Model
     /** @use HasFactory<ForumPostFactory> */
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::deleting(fn (self $post) => $post->reactions()->delete());
+    }
+
     /** @return BelongsTo<ForumTopic, $this> */
     public function topic(): BelongsTo
     {

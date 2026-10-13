@@ -12,6 +12,11 @@ use Illuminate\Support\Collection;
 #[Fillable(['post_id', 'user_id', 'body', 'parent_id'])]
 class Comment extends Model
 {
+    protected static function booted(): void
+    {
+        static::deleting(fn (self $comment) => $comment->reactions()->delete());
+    }
+
     /** @return BelongsTo<Post, $this> */
     public function post(): BelongsTo
     {
