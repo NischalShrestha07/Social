@@ -3,6 +3,7 @@
 use App\Models\ForumCategory;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -11,12 +12,13 @@ new #[Title('Forum'), Layout('layouts::bare')] class extends Component
 {
     public string $search = '';
 
+    #[Locked]
+    public ForumCategory $category;
+
     public function mount(ForumCategory $category): void
     {
         $this->category = $category;
     }
-
-    public ForumCategory $category;
 
     public function updated(): void
     {

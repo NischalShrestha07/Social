@@ -66,7 +66,7 @@ class ForumPost extends Model
             return;
         }
 
-        $this->reactions()->create(['user_id' => $user->id, 'type' => 'like']);
+        Reaction::createSafely($this, $user);
     }
 
     public function likesCount(): int

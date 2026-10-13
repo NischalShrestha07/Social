@@ -4,6 +4,7 @@ namespace App\Livewire\Concerns;
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\Reaction;
 use App\Notifications\PostCommented;
 use App\Notifications\PostLiked;
 use Illuminate\Support\Facades\Gate;
@@ -62,16 +63,19 @@ trait InteractsWithPosts
         $post = Post::findOrFail($postId);
         $this->authorizePostInteraction($post);
 
-        $existing = $post->reactions()->where('user_id', auth()->id())->where('type', 'like');
+        $user = auth()->user();
+
+        if (! $user) {
+            return;
+        }
+
+        $existing = $post->reactions()->where('user_id', $user->id)->where('type', 'like');
 
         if ($existing->exists()) {
             $existing->delete();
-        } else {
-            $post->reactions()->create(['user_id' => auth()->id(), 'type' => 'like']);
-
-            if ($post->user_id !== auth()->id()) {
-                $post->user->notify(new PostLiked(auth()->user(), $post));
-            }
+        } elseif (Reaction::createSafely($post, $user) && $post->user_id !== $user->id) {
+            // Only notify when this request actually created the like.
+            $post->user->notify(new PostLiked($user, $post));
         }
 
         $this->refreshPosts();
@@ -82,12 +86,18 @@ trait InteractsWithPosts
         $comment = Comment::with('post')->findOrFail($commentId);
         $this->authorizePostInteraction($comment->post);
 
-        $existing = $comment->reactions()->where('user_id', auth()->id())->where('type', 'like');
+        $user = auth()->user();
+
+        if (! $user) {
+            return;
+        }
+
+        $existing = $comment->reactions()->where('user_id', $user->id)->where('type', 'like');
 
         if ($existing->exists()) {
             $existing->delete();
         } else {
-            $comment->reactions()->create(['user_id' => auth()->id(), 'type' => 'like']);
+            Reaction::createSafely($comment, $user);
         }
 
         $this->refreshPosts();

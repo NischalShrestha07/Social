@@ -118,10 +118,10 @@ class Video extends Model
             return;
         }
 
-        $this->reactions()->create(['user_id' => $user->id, 'type' => 'like']);
+        $liked = Reaction::createSafely($this, $user);
 
         // Uploaders don't get a notification for liking their own video.
-        if ($this->user_id !== $user->id) {
+        if ($liked && $this->user_id !== $user->id) {
             Notification::send($this->uploader, new VideoLiked($this, $user));
         }
     }
