@@ -1,4 +1,4 @@
-<li>
+<li wire:poll.15s>
 	<a href="{{ route('notifications') }}" title="Notification" data-ripple="">
 		@if($unreadCount)
 			<em class="bg-purple">{{ $unreadCount }}</em>

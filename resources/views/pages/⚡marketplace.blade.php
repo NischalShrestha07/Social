@@ -63,6 +63,7 @@ new #[Title('Marketplace'), Layout('layouts::bare')] class extends Component
             ->when($this->condition, fn ($q) => $q->where('condition', $this->condition))
             ->when($this->savedOnly, fn ($q) => $q->whereHas('savers', fn ($s) => $s->where('users.id', auth()->id())))
             ->with('seller')
+            ->withExists(['savers as saved_by_me' => fn ($q) => $q->where('users.id', auth()->id())])
             ->withCount('offers')
             ->when(
                 $this->sort,
@@ -187,9 +188,9 @@ new #[Title('Marketplace'), Layout('layouts::bare')] class extends Component
 									<div class="col-lg-4 col-md-6 col-sm-12" wire:key="listing-{{ $listing->id }}">
 										<x-pitnik.listing-box :listing="$listing" />
 										<button type="button" wire:click="toggleSave({{ $listing->id }})"
-											style="background:none;border:0;color:{{ $listing->isSavedBy(auth()->user()) ? '#e0245e' : '#757a95' }};cursor:pointer;font:inherit;padding:10px 0;">
+											style="background:none;border:0;color:{{ $listing->saved_by_me ? '#e0245e' : '#757a95' }};cursor:pointer;font:inherit;padding:10px 0;">
 											<i class="fa-regular fa-heart"></i>
-											{{ $listing->isSavedBy(auth()->user()) ? 'Saved' : 'Save' }}
+											{{ $listing->saved_by_me ? 'Saved' : 'Save' }}
 										</button>
 									</div>
 								@empty

@@ -52,7 +52,7 @@
 			<div class="coment-area" style="display: block;">
 				<ul class="we-comet">
 					@foreach($post->comments as $comment)
-						<li>
+						<li wire:key="comment-{{ $comment->id }}">
 							<div class="comet-avatar">
 								<img src="{{ $comment->user->avatarUrl() }}" alt="">
 							</div>
@@ -69,7 +69,7 @@
 						</li>
 
 						@foreach($comment->replies as $reply)
-							<li style="margin-left: 40px;">
+							<li wire:key="reply-{{ $reply->id }}" style="margin-left: 40px;">
 								<div class="comet-avatar">
 									<img src="{{ $reply->user->avatarUrl() }}" alt="">
 								</div>
@@ -90,7 +90,6 @@
 					<li
 						class="post-comment"
 						x-data="{ body: '' }"
-						x-on:submit.prevent="$wire.addComment({{ $post->id }}, body).then(() => body = '')"
 					>
 						<div class="comet-avatar">
 							<img src="{{ auth()->user()->avatarUrl() }}" alt="">

@@ -9,7 +9,7 @@
 		</h5>
 		<span style="color:#757a95;font-size:13px;">
 			{{ number_format($channel->subscribers_count) }} {{ Str::plural('subscriber', $channel->subscribers_count) }}
-			· {{ $channel->videos()->count() }} {{ Str::plural('video', $channel->videos()->count()) }}
+			· {{ $channel->videos_count ?? $channel->videos()->count() }} {{ Str::plural('video', $channel->videos_count ?? $channel->videos()->count()) }}
 		</span>
 		@if($channel->description)
 			<p style="color:#757a95;margin-top:12px;">{{ Str::words(strip_tags($channel->description), 14, '...') }}</p>

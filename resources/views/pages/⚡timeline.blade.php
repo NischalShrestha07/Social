@@ -73,9 +73,11 @@ new #[\Livewire\Attributes\Layout('layouts::bare')] class extends Component
     {
         Friendship::where('status', 'accepted')
             ->where(function ($query) {
-                $query->where('user_id', auth()->id())->where('friend_id', $this->user->id);
-            })->orWhere(function ($query) {
-                $query->where('user_id', $this->user->id)->where('friend_id', auth()->id());
+                $query->where(function ($query) {
+                    $query->where('user_id', auth()->id())->where('friend_id', $this->user->id);
+                })->orWhere(function ($query) {
+                    $query->where('user_id', $this->user->id)->where('friend_id', auth()->id());
+                });
             })->delete();
     }
 
