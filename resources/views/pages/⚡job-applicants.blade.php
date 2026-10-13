@@ -103,7 +103,7 @@ new #[Title('Applicants'), Layout('layouts::bare')] class extends Component
 													</span>
 												</div>
 												<span style="background:{{ $application->status === 'accepted' ? '#e6f7ed' : ($application->status === 'rejected' ? '#fdeaea' : '#f2f2f7') }};border-radius:4px;padding:4px 10px;font-size:12px;color:#535165;">
-													{{ ucfirst($application->status) }}
+													{{ \App\Models\JobApplication::statusLabel($application->status) }}
 												</span>
 											</div>
 											@if($application->cover_letter)

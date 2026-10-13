@@ -170,7 +170,7 @@ new #[Title('Job'), Layout('layouts::bare')] class extends Component
 									<strong>You applied.</strong>
 									<span style="color:#757a95;">
 										Status:
-										{{ \App\Models\JobPosting::typeLabel($this->myApplication->status) === 'Pending' ? 'Pending' : ucfirst($this->myApplication->status) }}
+										{{\App\Models\JobApplication::statusLabel($this->myApplication->status) }}
 									</span>
 									@if($this->myApplication->resumeUrl())
 										<div style="margin-top:10px;">

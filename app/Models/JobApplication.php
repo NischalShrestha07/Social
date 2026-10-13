@@ -39,4 +39,13 @@ class JobApplication extends Model
     {
         return $this->resume_path ? asset('storage/'.$this->resume_path) : null;
     }
+
+    public static function statusLabel(string $status): string
+    {
+        return match ($status) {
+            'accepted' => 'Accepted',
+            'rejected' => 'Rejected',
+            default => 'Pending',
+        };
+    }
 }
